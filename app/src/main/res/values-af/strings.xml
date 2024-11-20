@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">CampusConnect--V1</string>
+    <string name="navigation_drawer_open">Maak navigasie laai oop</string>
+    <string name="navigation_drawer_close">Maak navigasie laai toe</string>
+
+    <!-- Settings -->
+    <string name="settings">Instellings</string>
+    <string name="language">Taal</string>
+    <string name="notifications">Kennisgewings</string>
+    <string name="enable_notifications">Aktiveer Kennisgewings</string>
+    <string name="notification_sound">Kennisgewingklank</string>
+    <string name="vibration">Vibrasie</string>
+    <string name="display">Vertoon</string>
+    <string name="dark_mode">Donker Modus</string>
+    <string name="text_size">Teksgrootte</string>
+    <string name="save_settings">Stoor Instellings</string>
+    <string name="settings_saved">Instellings suksesvol gestoor</string>
+
+    <!-- Languages -->
+    <string name="english">Engels</string>
+    <string name="afrikaans">Afrikaans</string>
+    <string name="zulu">isiZulu</string>
+
+    <!-- Navigation Items -->
+    <string name="nav_dashboard">Kontroleskerm</string>
+    <string name="nav_view_modules">Bekyk Modules</string>
+    <string name="nav_profile">Profiel</string>
+    <string name="nav_settings">Instellings</string>
+    <string name="nav_logout">Teken Uit</string>
+
+    <!-- Messages -->
+    <string name="error_fetching_info">Fout met die verkryging van studentinligting: %1$s</string>
+    <string name="logout_success">Suksesvol uitgeteken</string>
+    <string name="logout_error">Fout tydens uitteken. Probeer asseblief weer.</string>
+    <string name="view_previous_queries">Bekyk Vorige Navrae</string>
+
+
+    <!-- Section Headers -->
+    <string name="campus_queries">Kampus Navrae</string>
+    <string name="student_hub_queries">Studentesentrum Navrae</string>
+    <string name="alumni_queries">Alumni/Voormalige Student Navrae</string>
+    <string name="search_hint">Soek navrae...</string>
+
+    <!-- Campus Query Cards -->
+    <string name="lecturer_query">Dosent Navraag</string>
+    <string name="results_query">Uitslae Navraag</string>
+    <string name="timetable_query">Rooster Navraag</string>
+    <string name="finance_query">Finansiële Navraag</string>
+    <string name="assessment_query">Assessering Navraag</string>
+    <string name="student_systems_query">Studente Stelsels Navraag</string>
+    <string name="pas_query">Program Assessering Skedule (PAS) Navraag</string>
+    <string name="visa_query">Student Visum / Studievisum Brief / Gedragsbrief</string>
+
+    <!-- Student Hub Query Cards -->
+    <string name="discontinuation_assessment">Aansoek vir Staakassessering</string>
+    <string name="deans_exam">Aansoek vir Dekaan se Eksamen</string>
+    <string name="assessment_appeals">Assessering Appèlle</string>
+    <string name="deferred_assessment">Uitgestelde Assessering</string>
+    <string name="disciplinary_appeals">Dissiplinêre Appèlle</string>
+    <string name="external_credit">Eksterne Krediet</string>
+    <string name="increased_credit_load">Verhoogde Kredietlading</string>
+    <string name="module_exemption">Module Vrystelling</string>
+
+    <!-- Alumni Query Cards -->
+    <string name="alumni_discontinuation">Aansoek vir Staakassessering</string>
+    <string name="alumni_deans_exam">Aansoek vir Dekaan se Eksamen</string>
+    <string name="graduation_confirmation">Aansoek vir Gradueringsbevestiging of Sillabus Versoek</string>
+    <string name="certificate_reprint">Versoek vir Sertifikaat Herdruk</string>
+    <string name="uncollected_certificates">Versoek vir Onopgeëiste Sertifikate</string>
+    <string name="transcript_request">Akademiese Rekord Versoek</string>
+
+    <string name="menu_description">Kieslys</string>
+    <string name="student_dashboard">Student Kontroleskerm</string>
+
+</resources>

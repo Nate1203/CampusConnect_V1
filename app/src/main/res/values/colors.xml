@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="electric_blue">#7DF9FF</color>
+    <color name="complementary_grey">#2C3E50</color>
+    <color name="dark_background">#1E2A3A</color>
+    <color name="input_background">#2C3E50</color>
+    <color name="text_hint">#4A6572</color>
+    <color name="text_input">#FFFFFF</color>
+    <color name="button_purple">#B19CD9</color>
+    <color name="button_teal">#4A6572</color>
+    <color name="status_bar_color">#1E2A3A</color>
+    <color name="background_color">#F5F5F5</color>
+    <color name="card_background">#2C2C2C</color>
+    <color name="text_secondary">#B3FFFFFF</color>
+    <color name="purple_pink">#FF69B4</color>
+    <color name="hint_color">#80FFFFFF</color>  <!-- 50% transparent white -->
+    <color name="search_bar_stroke">#33FFFFFF</color>  <!-- 20% transparent white -->
+    <color name="search_bar_background">#1AFFFFFF</color>
+    <color name="darker_purple">#8E44AD</color>
+    <color name="green_success">#28a745</color>
+    <color name="yellow_warning">#ffc107</color>
+    <color name="blue_processing">#17a2b8</color>
+</resources>

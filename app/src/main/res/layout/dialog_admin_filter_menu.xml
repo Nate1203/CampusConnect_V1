@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="280dp"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@color/dark_background"
+    android:padding="16dp">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Filter"
+        android:textSize="32sp"
+        android:textStyle="bold"
+        android:textColor="@android:color/white"
+        android:layout_marginBottom="24dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Category"
+        android:textColor="@android:color/white"
+        android:textSize="24sp"
+        android:layout_marginBottom="16dp"/>
+
+    <RadioGroup
+        android:id="@+id/categoryGroup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="24dp">
+
+        <RadioButton
+            android:id="@+id/allCategories"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="All Categories"
+            android:textColor="@android:color/white"
+            android:textSize="18sp"
+            android:buttonTint="@color/electric_blue"
+            android:checked="true"
+            android:padding="8dp"/>
+
+        <RadioButton
+            android:id="@+id/campusQueries"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Campus Queries"
+            android:textColor="@android:color/white"
+            android:textSize="18sp"
+            android:buttonTint="@color/electric_blue"
+            android:padding="8dp"/>
+
+        <RadioButton
+            android:id="@+id/studentHubQueries"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Student Hub Queries"
+            android:textColor="@android:color/white"
+            android:textSize="18sp"
+            android:buttonTint="@color/electric_blue"
+            android:padding="8dp"/>
+
+        <RadioButton
+            android:id="@+id/alumniQueries"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Alumni Student Queries"
+            android:textColor="@android:color/white"
+            android:textSize="18sp"
+            android:buttonTint="@color/electric_blue"
+            android:padding="8dp"/>
+    </RadioGroup>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Sort By"
+        android:textColor="@android:color/white"
+        android:textSize="24sp"
+        android:layout_marginBottom="16dp"/>
+
+    <RadioGroup
+        android:id="@+id/sortGroup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="24dp">
+
+        <RadioButton
+            android:id="@+id/newest"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Newest First"
+            android:textColor="@android:color/white"
+            android:textSize="18sp"
+            android:buttonTint="@color/electric_blue"
+            android:checked="true"
+            android:padding="8dp"/>
+
+        <RadioButton
+            android:id="@+id/oldest"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Oldest First"
+            android:textColor="@android:color/white"
+            android:textSize="18sp"
+            android:buttonTint="@color/electric_blue"
+            android:padding="8dp"/>
+    </RadioGroup>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="end">
+
+        <Button
+            android:id="@+id/resetButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="RESET"
+            android:layout_marginEnd="8dp"
+            android:textColor="@android:color/black"
+            android:backgroundTint="@android:color/white"/>
+
+        <Button
+            android:id="@+id/applyButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="APPLY"
+            android:textColor="@android:color/white"
+            android:backgroundTint="@color/electric_blue"/>
+    </LinearLayout>
+
+</LinearLayout>

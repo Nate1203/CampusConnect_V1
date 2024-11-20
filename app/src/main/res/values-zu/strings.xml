@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">CampusConnect--V1</string>
+    <string name="navigation_drawer_open">Vula idrawer lokuzulazula</string>
+    <string name="navigation_drawer_close">Vala idrawer lokuzulazula</string>
+
+    <!-- Settings -->
+    <string name="settings">Izilungiselelo</string>
+    <string name="language">Ulimi</string>
+    <string name="notifications">Izaziso</string>
+    <string name="enable_notifications">Vula Izaziso</string>
+    <string name="notification_sound">Umsindo Wezaziso</string>
+    <string name="vibration">Ukuzamazama</string>
+    <string name="display">Umbukiso</string>
+    <string name="dark_mode">Indlela Emnyama</string>
+    <string name="text_size">Usayizi Wombhalo</string>
+    <string name="save_settings">Gcina Izilungiselelo</string>
+    <string name="settings_saved">Izilungiselelo zigcinwe ngempumelelo</string>
+
+    <!-- Languages -->
+    <string name="english">English</string>
+    <string name="afrikaans">Afrikaans</string>
+    <string name="zulu">isiZulu</string>
+
+    <!-- Navigation Items -->
+    <string name="nav_dashboard">Ideshibhodi</string>
+    <string name="nav_view_modules">Buka Amamojuli</string>
+    <string name="nav_profile">Iphrofayela</string>
+    <string name="nav_settings">Izilungiselelo</string>
+    <string name="nav_logout">Phuma</string>
+
+    <!-- Messages -->
+    <string name="error_fetching_info">Iphutha ekutholeni ulwazi lomfundi: %1$s</string>
+    <string name="logout_success">Uphumile ngempumelelo</string>
+    <string name="logout_error">Iphutha ngesikhathi kuphuma. Sicela uzame futhi.</string>
+    <string name="view_previous_queries">Buka Imibuzo Edlule</string>
+
+ v
+    <!-- Section Headers -->
+    <string name="campus_queries">Imibuzo Yasekhampasini</string>
+    <string name="student_hub_queries">Imibuzo Yesikhungo Sabafundi</string>
+    <string name="alumni_queries">Imibuzo Yabafundi Abadala/Abaphuma Esikoleni</string>
+    <string name="search_hint">Sesha imibuzo...</string>
+
+    <!-- Campus Query Cards -->
+    <string name="lecturer_query">Umbuzo Womfundisi</string>
+    <string name="results_query">Umbuzo Wemiphumela</string>
+    <string name="timetable_query">Umbuzo Weshejuli</string>
+    <string name="finance_query">Umbuzo Wezezimali</string>
+    <string name="assessment_query">Umbuzo Wokuhlola</string>
+    <string name="student_systems_query">Umbuzo Wezinhlelo Zabafundi</string>
+    <string name="pas_query">Umbuzo Wohlelo Lokuhlola (PAS)</string>
+    <string name="visa_query">Ivisa Yomfundi / Incwadi Yevisa Yokufunda / Incwadi Yokuziphatha</string>
+
+    <!-- Student Hub Query Cards -->
+    <string name="discontinuation_assessment">Isicelo Sokuhlola Ukuyeka</string>
+    <string name="deans_exam">Isicelo Sokuhlolwa KweDini</string>
+    <string name="assessment_appeals">Izibheno Zokuhlola</string>
+    <string name="deferred_assessment">Ukuhlola Okuhlehlisiwe</string>
+    <string name="disciplinary_appeals">Izibheno Zokuqondiswa</string>
+    <string name="external_credit">Isikweletu Sangaphandle</string>
+    <string name="increased_credit_load">Ukunyuka Komthwalo Wesikweletu</string>
+    <string name="module_exemption">Ukukhululwa Kwemodyuli</string>
+
+    <!-- Alumni Query Cards -->
+    <string name="alumni_discontinuation">Isicelo Sokuhlola Ukuyeka</string>
+    <string name="alumni_deans_exam">Isicelo Sokuhlolwa KweDini</string>
+    <string name="graduation_confirmation">Isicelo Sokuqinisekisa Ukuthweswa Iziqu noma Isicelo Sesilabhasi</string>
+    <string name="certificate_reprint">Isicelo Sokushicilela Kabusha Isitifiketi</string>
+    <string name="uncollected_certificates">Isicelo Sezitifiketi Ezingalandwanga</string>
+    <string name="transcript_request">Isicelo Setranskripthi</string>
+
+    <string name="menu_description">Imenyu</string>
+    <string name="student_dashboard">Ideshibhodi Yomfundi</string>
+
+</resources>

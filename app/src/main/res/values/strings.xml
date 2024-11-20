@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">CampusConnect--V1</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <!-- Settings (existing) -->
+    <string name="settings">Settings</string>
+    <string name="language">Language</string>
+    <string name="notifications">Notifications</string>
+    <string name="enable_notifications">Enable Notifications</string>
+    <string name="notification_sound">Notification Sound</string>
+    <string name="vibration">Vibration</string>
+    <string name="display">Display</string>
+    <string name="dark_mode">Dark Mode</string>
+    <string name="text_size">Text Size</string>
+    <string name="save_settings">Save Settings</string>
+
+    <!-- New strings for language support -->
+    <string name="settings_saved">Settings saved successfully</string>
+    <string name="english">English</string>
+    <string name="afrikaans">Afrikaans</string>
+    <string name="zulu">isiZulu</string>
+
+    <!-- Navigation Items -->
+    <string name="nav_dashboard">Dashboard</string>
+    <string name="nav_view_modules">View Modules</string>
+    <string name="nav_profile">Profile</string>
+    <string name="nav_settings">Settings</string>
+    <string name="nav_logout">Logout</string>
+
+    <!-- Messages -->
+    <string name="error_fetching_info">Error fetching student info: %1$s</string>
+    <string name="logout_success">Logged out successfully</string>
+    <string name="logout_error">Error during logout. Please try again.</string>
+    <string name="view_previous_queries">View Previous Queries</string>
+
+    <!-- Section Headers -->
+    <string name="campus_queries">Campus Queries</string>
+    <string name="student_hub_queries">Student Hub Queries</string>
+    <string name="alumni_queries">Alumni/Former Student Queries</string>
+    <string name="search_hint">Search queries...</string>
+
+    <!-- Campus Query Cards -->
+    <string name="lecturer_query">Lecturer Query</string>
+    <string name="results_query">Results Query</string>
+    <string name="timetable_query">Timetable Query</string>
+    <string name="finance_query">Finance Query</string>
+    <string name="assessment_query">Assessment Query</string>
+    <string name="student_systems_query">Student Systems Query</string>
+    <string name="pas_query">Programme Assessment Schedule (PAS) Query</string>
+    <string name="visa_query">Student Visa / Study Visa Letter / Letter of Conduct</string>
+
+    <!-- Student Hub Query Cards -->
+    <string name="discontinuation_assessment">Application for a Discontinuation Assessment</string>
+    <string name="deans_exam">Application for Dean\'s exam</string>
+    <string name="assessment_appeals">Assessment Appeals</string>
+    <string name="deferred_assessment">Deferred assessment</string>
+    <string name="disciplinary_appeals">Disciplinary Appeals</string>
+    <string name="external_credit">External Credit</string>
+    <string name="increased_credit_load">Increased Credit Load</string>
+    <string name="module_exemption">Module Exemption</string>
+
+    <!-- Alumni Query Cards -->
+    <string name="alumni_discontinuation">Application for a Discontinuation Assessment</string>
+    <string name="alumni_deans_exam">Application for Dean\'s exam</string>
+    <string name="graduation_confirmation">Application for Graduation confirmation or Syllabus Request</string>
+    <string name="certificate_reprint">Request for Certificate Reprint</string>
+    <string name="uncollected_certificates">Request for Uncollected Certificates</string>
+    <string name="transcript_request">Transcript Request</string>
+
+    <string name="menu_description">Menu</string>
+    <string name="student_dashboard">Student Dashboard</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+</resources>

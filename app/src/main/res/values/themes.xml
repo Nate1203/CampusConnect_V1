@@ -1,0 +1,16 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Base.Theme.CampusConnectV1" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Customize your light theme here. -->
+        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+    </style>
+
+    <style name="Theme.CampusConnectV1" parent="Base.Theme.CampusConnectV1" />
+
+    <style name="Theme.YourAppTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <!-- Other theme attributes -->
+        <item name="android:windowTranslucentStatus">true</item>
+        <item name="android:windowLightStatusBar">true</item>
+    </style>
+
+</resources>

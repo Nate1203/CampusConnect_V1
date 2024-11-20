@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/studentLoginFragment">
+
+    <fragment
+        android:id="@+id/studentLoginFragment"
+        android:name="za.co.varstycollege.st1009749.campusconnect__v1.StudentLoginFragment"
+        android:label="Student Login"
+        tools:layout="@layout/fragment_student_login">
+        <action
+            android:id="@+id/action_studentLoginFragment_to_studentSignupFragment"
+            app:destination="@id/studentSignupFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/adminLoginFragment"
+        android:name="za.co.varstycollege.st1009749.campusconnect__v1.AdminLoginFragment"
+        android:label="Admin Login"
+        tools:layout="@layout/fragment_admin_login">
+        <action
+            android:id="@+id/action_adminLoginFragment_to_adminSignupFragment"
+            app:destination="@id/adminSignupFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/studentSignupFragment"
+        android:name="za.co.varstycollege.st1009749.campusconnect__v1.StudentSignupFragment"
+        android:label="Student Signup"
+        tools:layout="@layout/fragment_student_signup" />
+
+    <fragment
+        android:id="@+id/adminSignupFragment"
+        android:name="za.co.varstycollege.st1009749.campusconnect__v1.AdminSignupFragment"
+        android:label="Admin Signup"
+        tools:layout="@layout/fragment_admin_signup" />
+
+</navigation>

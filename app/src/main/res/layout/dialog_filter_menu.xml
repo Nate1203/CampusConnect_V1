@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="@color/dark_background">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Filter Queries"
+        android:textSize="20sp"
+        android:textColor="@color/white"
+        android:layout_marginBottom="16dp"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Category"
+        android:textColor="@color/white"
+        android:layout_marginBottom="8dp"/>
+
+    <RadioGroup
+        android:id="@+id/categoryGroup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp">
+
+        <RadioButton
+            android:id="@+id/allCategories"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="All Categories"
+            android:textColor="@color/white"
+            android:checked="true"/>
+
+        <RadioButton
+            android:id="@+id/campusQueries"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Campus Queries"
+            android:textColor="@color/white"/>
+
+        <RadioButton
+            android:id="@+id/studentHubQueries"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Student Hub Queries"
+            android:textColor="@color/white"/>
+
+        <RadioButton
+            android:id="@+id/alumniQueries"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Alumni Student Queries"
+            android:textColor="@color/white"/>
+    </RadioGroup>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Sort By"
+        android:textColor="@color/white"
+        android:layout_marginBottom="8dp"/>
+
+    <RadioGroup
+        android:id="@+id/sortGroup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp">
+
+        <RadioButton
+            android:id="@+id/newest"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Newest First"
+            android:textColor="@color/white"
+            android:checked="true"/>
+
+        <RadioButton
+            android:id="@+id/oldest"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Oldest First"
+            android:textColor="@color/white"/>
+    </RadioGroup>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="end">
+
+        <Button
+            android:id="@+id/resetButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Reset"
+            android:backgroundTint="@android:color/darker_gray"
+            android:layout_marginEnd="8dp"/>
+
+        <Button
+            android:id="@+id/applyButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Apply"
+            android:backgroundTint="@color/darker_purple"/>
+    </LinearLayout>
+
+</LinearLayout>

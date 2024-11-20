@@ -1,0 +1,504 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.drawerlayout.widget.DrawerLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/drawer_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    android:background="@color/background_color">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/dark_background"
+            app:contentInsetStart="0dp">
+
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/dark_background">
+
+                <ImageView
+                    android:id="@+id/menuIcon"
+                    android:layout_width="56dp"
+                    android:layout_height="56dp"
+                    android:padding="12dp"
+                    android:src="@drawable/ic_menu"
+                    android:layout_alignParentStart="true"
+                    android:layout_centerVertical="true"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    app:tint="@color/electric_blue" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Student Dashboard"
+                    android:textSize="24sp"
+                    android:textColor="@color/electric_blue"
+                    android:layout_centerInParent="true"/>
+
+            </RelativeLayout>
+
+
+        </androidx.appcompat.widget.Toolbar>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:background="@color/dark_background"
+            android:padding="16dp">
+
+            <androidx.appcompat.widget.SearchView
+                android:id="@+id/searchView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:iconifiedByDefault="false"
+                app:queryHint="@string/search_hint"
+                android:layout_marginBottom="16dp"/>
+
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/campus_queries"
+                        android:textAlignment="center"
+                        android:textSize="18sp"
+                        android:textColor="@android:color/white"
+                        android:background="@color/electric_blue"
+                        android:padding="8dp"
+                        android:layout_marginBottom="16dp"/>
+
+                    <GridLayout
+                        android:id="@+id/gridLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:columnCount="2"
+                        android:alignmentMode="alignMargins"
+                        android:columnOrderPreserved="false"
+                        android:layout_marginBottom="16dp">
+
+                        <androidx.cardview.widget.CardView
+                            android:id="@+id/lecturerQueryCard"
+                            style="@style/DashboardCard"
+                            android:clickable="true"
+                            android:focusable="true">
+                            <LinearLayout style="@style/DashboardCardContent">
+                                <ImageView
+                                    style="@style/DashboardCardIcon"
+                                    android:src="@drawable/ic_lecturer_query"/>
+                                <TextView
+                                    android:id="@+id/lecturerQueryText"
+                                    style="@style/DashboardCardText"
+                                    android:text="@string/lecturer_query"/>
+                            </LinearLayout>
+                        </androidx.cardview.widget.CardView>
+
+                        <androidx.cardview.widget.CardView
+                            android:id="@+id/resultsQueryCard"
+                            style="@style/DashboardCard"
+                            android:clickable="true"
+                            android:focusable="true">
+                            <LinearLayout style="@style/DashboardCardContent">
+                                <ImageView
+                                    style="@style/DashboardCardIcon"
+                                    android:src="@drawable/ic_results_query"/>
+                                <TextView
+                                    android:id="@+id/resultsQueryText"
+                                    style="@style/DashboardCardText"
+                                    android:text="@string/results_query"/>
+                            </LinearLayout>
+                        </androidx.cardview.widget.CardView>
+
+                        <androidx.cardview.widget.CardView
+                            android:id="@+id/timetableQueryCard"
+                            style="@style/DashboardCard"
+                            android:clickable="true"
+                            android:focusable="true">
+                            <LinearLayout style="@style/DashboardCardContent">
+                                <ImageView
+                                    style="@style/DashboardCardIcon"
+                                    android:src="@drawable/ic_timetable_query"/>
+                                <TextView
+                                    android:id="@+id/timetableQueryText"
+                                    style="@style/DashboardCardText"
+                                    android:text="@string/timetable_query"/>
+                            </LinearLayout>
+                        </androidx.cardview.widget.CardView>
+
+                        <androidx.cardview.widget.CardView
+                            android:id="@+id/financeQueryCard"
+                            style="@style/DashboardCard"
+                            android:clickable="true"
+                            android:focusable="true">
+                            <LinearLayout style="@style/DashboardCardContent">
+                                <ImageView
+                                    style="@style/DashboardCardIcon"
+                                    android:src="@drawable/ic_finance"/>
+                                <TextView
+                                    android:id="@+id/financeQueryText"
+                                    style="@style/DashboardCardText"
+                                    android:text="@string/finance_query"/>
+                            </LinearLayout>
+                        </androidx.cardview.widget.CardView>
+
+                        <androidx.cardview.widget.CardView
+                            android:id="@+id/assessmentQueryCard"
+                            style="@style/DashboardCard"
+                            android:clickable="true"
+                            android:focusable="true">
+                            <LinearLayout style="@style/DashboardCardContent">
+                                <ImageView
+                                    style="@style/DashboardCardIcon"
+                                    android:src="@drawable/ic_assessment"/>
+                                <TextView
+                                    android:id="@+id/assessmentQueryText"
+                                    style="@style/DashboardCardText"
+                                    android:text="@string/assessment_query"/>
+                            </LinearLayout>
+                        </androidx.cardview.widget.CardView>
+
+                        <androidx.cardview.widget.CardView
+                            android:id="@+id/studentSystemsQueryCard"
+                            style="@style/DashboardCard"
+                            android:clickable="true"
+                            android:focusable="true">
+                            <LinearLayout style="@style/DashboardCardContent">
+                                <ImageView
+                                    style="@style/DashboardCardIcon"
+                                    android:src="@drawable/ic_student_systems"/>
+                                <TextView
+                                    android:id="@+id/studentSystemsQueryText"
+                                    style="@style/DashboardCardText"
+                                    android:text="@string/student_systems_query"/>
+                            </LinearLayout>
+                        </androidx.cardview.widget.CardView>
+
+                        <androidx.cardview.widget.CardView
+                            android:id="@+id/pasQueryCard"
+                            style="@style/DashboardCard"
+                            android:clickable="true"
+                            android:focusable="true">
+                            <LinearLayout style="@style/DashboardCardContent">
+                                <ImageView
+                                    style="@style/DashboardCardIcon"
+                                    android:src="@drawable/ic_pas_query"/>
+                                <TextView
+                                    android:id="@+id/pasQueryText"
+                                    style="@style/DashboardCardText"
+                                    android:text="@string/pas_query"/>
+                            </LinearLayout>
+                        </androidx.cardview.widget.CardView>
+
+                        <androidx.cardview.widget.CardView
+                            android:id="@+id/visaQueryCard"
+                            style="@style/DashboardCard"
+                            android:clickable="true"
+                            android:focusable="true">
+                            <LinearLayout style="@style/DashboardCardContent">
+                                <ImageView
+                                    style="@style/DashboardCardIcon"
+                                    android:src="@drawable/ic_visa_query"/>
+                                <TextView
+                                    android:id="@+id/visaQueryText"
+                                    style="@style/DashboardCardText"
+                                    android:text="@string/visa_query"/>
+                            </LinearLayout>
+                        </androidx.cardview.widget.CardView>
+                    </GridLayout>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/student_hub_queries"
+                        android:textAlignment="center"
+                        android:textSize="18sp"
+                        android:textColor="@android:color/white"
+                        android:background="@color/purple_pink"
+                        android:padding="8dp"
+                        android:layout_marginBottom="16dp"/>
+
+                    <GridLayout
+                        android:id="@+id/gridLayout1"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:columnCount="2"
+                        android:rowCount="4"
+                        android:alignmentMode="alignMargins"
+                        android:columnOrderPreserved="false"
+                        android:layout_marginBottom="16dp">
+
+                        <androidx.cardview.widget.CardView
+                            android:id="@+id/discontinuationAssessmentCard"
+                            style="@style/DashboardCard">
+                            <LinearLayout style="@style/DashboardCardContent">
+                                <ImageView
+                                    style="@style/DashboardCardIcon2"
+                                    android:src="@drawable/ic_discontinuation"/>
+                                <TextView
+                                    android:id="@+id/discontinuationAssessmentText"
+                                    style="@style/DashboardCardText"
+                                    android:text="@string/discontinuation_assessment"/>
+                            </LinearLayout>
+                        </androidx.cardview.widget.CardView>
+
+                        <androidx.cardview.widget.CardView
+                            android:id="@+id/deansExamCard"
+                            style="@style/DashboardCard">
+                            <LinearLayout style="@style/DashboardCardContent">
+                                <ImageView
+                                    style="@style/DashboardCardIcon2"
+                                    android:src="@drawable/ic_deans_exam"/>
+                                <TextView
+                                    android:id="@+id/deansExamText"
+                                    style="@style/DashboardCardText"
+                                    android:text="@string/deans_exam"/>
+                            </LinearLayout>
+                        </androidx.cardview.widget.CardView>
+
+                        <androidx.cardview.widget.CardView
+                            android:id="@+id/assessmentAppealsCard"
+                            style="@style/DashboardCard">
+                            <LinearLayout style="@style/DashboardCardContent">
+                                <ImageView
+                                    style="@style/DashboardCardIcon2"
+                                    android:src="@drawable/ic_assessment_appeals"/>
+                                <TextView
+                                    android:id="@+id/assessmentAppealsText"
+                                    style="@style/DashboardCardText"
+                                    android:text="@string/assessment_appeals"/>
+                            </LinearLayout>
+                        </androidx.cardview.widget.CardView>
+
+                        <androidx.cardview.widget.CardView
+                            android:id="@+id/deferredAssessmentCard"
+                            style="@style/DashboardCard">
+                            <LinearLayout style="@style/DashboardCardContent">
+                                <ImageView
+                                    style="@style/DashboardCardIcon2"
+                                    android:src="@drawable/ic_deferred_assessment"/>
+                                <TextView
+                                    android:id="@+id/deferredAssessmentText"
+                                    style="@style/DashboardCardText"
+                                    android:text="@string/deferred_assessment"/>
+                            </LinearLayout>
+                        </androidx.cardview.widget.CardView>
+
+                        <androidx.cardview.widget.CardView
+                            android:id="@+id/disciplinaryAppealsCard"
+                            style="@style/DashboardCard">
+                            <LinearLayout style="@style/DashboardCardContent">
+                                <ImageView
+                                    style="@style/DashboardCardIcon2"
+                                    android:src="@drawable/ic_disciplinary_appeals"/>
+                                <TextView
+                                    android:id="@+id/disciplinaryAppealsText"
+                                    style="@style/DashboardCardText"
+                                    android:text="@string/disciplinary_appeals"/>
+                            </LinearLayout>
+                        </androidx.cardview.widget.CardView>
+
+                        <androidx.cardview.widget.CardView
+                            android:id="@+id/externalCreditCard"
+                            style="@style/DashboardCard">
+                            <LinearLayout style="@style/DashboardCardContent">
+                                <ImageView
+                                    style="@style/DashboardCardIcon2"
+                                    android:src="@drawable/ic_external_credit"/>
+                                <TextView
+                                    android:id="@+id/externalCreditText"
+                                    style="@style/DashboardCardText"
+                                    android:text="@string/external_credit"/>
+                            </LinearLayout>
+                        </androidx.cardview.widget.CardView>
+
+                        <androidx.cardview.widget.CardView
+                            android:id="@+id/increasedCreditLoadCard"
+                            style="@style/DashboardCard">
+                            <LinearLayout style="@style/DashboardCardContent">
+                                <ImageView
+                                    style="@style/DashboardCardIcon2"
+                                    android:src="@drawable/ic_increased_credit"/>
+                                <TextView
+                                    android:id="@+id/increasedCreditLoadText"
+                                    style="@style/DashboardCardText"
+                                    android:text="@string/increased_credit_load"/>
+                            </LinearLayout>
+                        </androidx.cardview.widget.CardView>
+
+                        <androidx.cardview.widget.CardView
+                            android:id="@+id/moduleExemptionCard"
+                            style="@style/DashboardCard">
+                            <LinearLayout style="@style/DashboardCardContent">
+                                <ImageView
+                                    style="@style/DashboardCardIcon2"
+                                    android:src="@drawable/ic_module_exemption"/>
+                                <TextView
+                                    android:id="@+id/moduleExemptionText"
+                                    style="@style/DashboardCardText"
+                                    android:text="@string/module_exemption"/>
+                            </LinearLayout>
+                        </androidx.cardview.widget.CardView>
+                    </GridLayout>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/alumni_queries"
+                        android:textAlignment="center"
+                        android:textSize="18sp"
+                        android:textColor="@android:color/white"
+                        android:background="@color/darker_purple"
+                        android:padding="8dp"
+                        android:layout_marginBottom="16dp"/>
+
+                    <GridLayout
+                        android:id="@+id/alumniQueriesGridLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:columnCount="2"
+                        android:rowCount="3"
+                        android:alignmentMode="alignMargins"
+                        android:columnOrderPreserved="false"
+                        android:layout_marginBottom="16dp">
+
+                        <androidx.cardview.widget.CardView
+                            android:id="@+id/applicationDiscontinuationCard"
+                            style="@style/DashboardCard"
+                            android:clickable="true"
+                            android:focusable="true">
+                            <LinearLayout style="@style/DashboardCardContent">
+                                <ImageView
+                                    style="@style/DashboardCardIcon3"
+                                    android:src="@drawable/ic_discontinuation"/>
+                                <TextView
+                                    android:id="@+id/applicationDiscontinuationText"
+                                    style="@style/DashboardCardText"
+                                    android:text="@string/alumni_discontinuation"/>
+                            </LinearLayout>
+                        </androidx.cardview.widget.CardView>
+
+                        <androidx.cardview.widget.CardView
+                            android:id="@+id/applicationDeansExamCard"
+                            style="@style/DashboardCard"
+                            android:clickable="true"
+                            android:focusable="true">
+                            <LinearLayout style="@style/DashboardCardContent">
+                                <ImageView
+                                    style="@style/DashboardCardIcon3"
+                                    android:src="@drawable/ic_deans_exam"/>
+                                <TextView
+                                    android:id="@+id/applicationDeansExamText"
+                                    style="@style/DashboardCardText"
+                                    android:text="@string/alumni_deans_exam"/>
+                            </LinearLayout>
+                        </androidx.cardview.widget.CardView>
+
+                        <androidx.cardview.widget.CardView
+                            android:id="@+id/graduationConfirmationCard"
+                            style="@style/DashboardCard"
+                            android:clickable="true"
+                            android:focusable="true">
+                            <LinearLayout style="@style/DashboardCardContent">
+                                <ImageView
+                                    style="@style/DashboardCardIcon3"
+                                    android:src="@drawable/ic_graduation"/>
+                                <TextView
+                                    android:id="@+id/graduationConfirmationText"
+                                    style="@style/DashboardCardText"
+                                    android:text="@string/graduation_confirmation"/>
+                            </LinearLayout>
+                        </androidx.cardview.widget.CardView>
+
+                        <androidx.cardview.widget.CardView
+                            android:id="@+id/certificateReprintCard"
+                            style="@style/DashboardCard"
+                            android:clickable="true"
+                            android:focusable="true">
+                            <LinearLayout style="@style/DashboardCardContent">
+                                <ImageView
+                                    style="@style/DashboardCardIcon3"
+                                    android:src="@drawable/ic_certificate_reprint"/>
+                                <TextView
+                                    android:id="@+id/certificateReprintText"
+                                    style="@style/DashboardCardText"
+                                    android:text="@string/certificate_reprint"/>
+                            </LinearLayout>
+                        </androidx.cardview.widget.CardView>
+
+                        <androidx.cardview.widget.CardView
+                            android:id="@+id/uncollectedCertificatesCard"
+                            style="@style/DashboardCard"
+                            android:clickable="true"
+                            android:focusable="true">
+                            <LinearLayout style="@style/DashboardCardContent">
+                                <ImageView
+                                    style="@style/DashboardCardIcon3"
+                                    android:src="@drawable/ic_uncollected_certificates"/>
+                                <TextView
+                                    android:id="@+id/uncollectedCertificatesText"
+                                    style="@style/DashboardCardText"
+                                    android:text="@string/uncollected_certificates"/>
+                            </LinearLayout>
+                        </androidx.cardview.widget.CardView>
+
+                        <androidx.cardview.widget.CardView
+                            android:id="@+id/transcriptRequestCard"
+                            style="@style/DashboardCard"
+                            android:clickable="true"
+                            android:focusable="true">
+                            <LinearLayout style="@style/DashboardCardContent">
+                                <ImageView
+                                    style="@style/DashboardCardIcon3"
+                                    android:src="@drawable/ic_transcript_request"/>
+                                <TextView
+                                    android:id="@+id/transcriptRequestText"
+                                    style="@style/DashboardCardText"
+                                    android:text="@string/transcript_request"/>
+                            </LinearLayout>
+                        </androidx.cardview.widget.CardView>
+
+                    </GridLayout>
+
+                </LinearLayout>
+            </ScrollView>
+
+            <Button
+                android:id="@+id/viewPreviousQueriesButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/view_previous_queries"
+                android:textColor="@android:color/white"
+                android:backgroundTint="@color/button_purple"
+                android:layout_marginTop="16dp"/>
+
+        </LinearLayout>
+    </LinearLayout>
+
+    <com.google.android.material.navigation.NavigationView
+        android:id="@+id/nav_view"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:fitsSystemWindows="true"
+        app:headerLayout="@layout/nav_header"
+        app:menu="@menu/drawer_menu" />
+
+</androidx.drawerlayout.widget.DrawerLayout>

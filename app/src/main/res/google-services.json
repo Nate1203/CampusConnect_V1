@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "163800800971",
+    "firebase_url": "https://kampus-konnect-38932-default-rtdb.firebaseio.com",
+    "project_id": "kampus-konnect-38932",
+    "storage_bucket": "kampus-konnect-38932.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:163800800971:android:ccbc31d2ec431b77b8454e",
+        "android_client_info": {
+          "package_name": "za.co.varstycollege.st1009747.campusconnect__v1"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAtz7nRpDfPPIELh5q-Kw64_HZ2hNezXtk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

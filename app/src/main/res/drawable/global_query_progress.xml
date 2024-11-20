@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Background -->
+    <item android:id="@android:id/background">
+        <shape>
+            <corners android:radius="8dp"/>
+            <solid android:color="#ffc107"/> <!-- Pending color (yellow) -->
+        </shape>
+    </item>
+
+    <!-- Processing -->
+    <item android:id="@android:id/secondaryProgress">
+        <clip>
+            <shape>
+                <corners android:radius="8dp"/>
+                <solid android:color="#17a2b8"/> <!-- Processing color (blue) -->
+            </shape>
+        </clip>
+    </item>
+
+    <!-- Solved -->
+    <item android:id="@android:id/progress">
+        <clip>
+            <shape>
+                <corners android:radius="8dp"/>
+                <solid android:color="#28a745"/> <!-- Solved color (green) -->
+            </shape>
+        </clip>
+    </item>
+</layer-list>
