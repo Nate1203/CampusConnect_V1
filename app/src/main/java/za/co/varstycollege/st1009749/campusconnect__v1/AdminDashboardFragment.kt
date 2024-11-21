@@ -548,10 +548,20 @@ class AdminDashboardFragment : Fragment() {
                     drawerLayout.closeDrawers()
                 }
                 R.id.nav_profile -> {
+                    parentFragmentManager.beginTransaction()
+                        .replace(R.id.fragmentContainer, AdminProfileFragment())
+                        .addToBackStack(null)  // Allows back navigation
+                        .commit()
                     drawerLayout.closeDrawers()
+                    true
                 }
                 R.id.nav_settings -> {
+                    parentFragmentManager.beginTransaction()
+                        .replace(R.id.fragmentContainer, AdminSettingsFragment())
+                        .addToBackStack(null)
+                        .commit()
                     drawerLayout.closeDrawers()
+                    true
                 }
                 R.id.nav_logout -> {
                     performLogout()
