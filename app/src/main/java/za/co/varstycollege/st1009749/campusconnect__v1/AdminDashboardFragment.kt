@@ -56,6 +56,27 @@ class AdminDashboardFragment : Fragment() {
     private lateinit var leaderboardIcon: ImageView
     private val CHANNEL_ID = "NewQueryNotifications"
     private val TAG = "AdminDashboard"
+    private lateinit var campusQueryProgress: ProgressBar
+    private lateinit var studentHubQueryProgress: ProgressBar
+    private lateinit var alumniQueryProgress: ProgressBar
+    private lateinit var campusSolvedText: TextView
+    private lateinit var campusProcessingText: TextView
+    private lateinit var campusPendingText: TextView
+    private lateinit var studentHubSolvedText: TextView
+    private lateinit var studentHubProcessingText: TextView
+    private lateinit var studentHubPendingText: TextView
+    private lateinit var alumniSolvedText: TextView
+    private lateinit var alumniProcessingText: TextView
+    private lateinit var alumniPendingText: TextView
+
+    private data class QueryStats(
+        var solvedCount: Int = 0,
+        var processingCount: Int = 0,
+        var pendingCount: Int = 0
+    ) {
+        val total: Int get() = solvedCount + processingCount + pendingCount
+    }
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -94,6 +115,19 @@ class AdminDashboardFragment : Fragment() {
         levelText = view.findViewById(R.id.levelText)
         experienceText = view.findViewById(R.id.experienceText)
         leaderboardIcon = view.findViewById<ImageView>(R.id.leaderboardIcon)
+        campusQueryProgress = view.findViewById(R.id.campusQueryProgress)
+        studentHubQueryProgress = view.findViewById(R.id.studentHubQueryProgress)
+        alumniQueryProgress = view.findViewById(R.id.alumniQueryProgress)
+        campusSolvedText = view.findViewById(R.id.campusSolvedText)
+        campusProcessingText = view.findViewById(R.id.campusProcessingText)
+        campusPendingText = view.findViewById(R.id.campusPendingText)
+        studentHubSolvedText = view.findViewById(R.id.studentHubSolvedText)
+        studentHubProcessingText = view.findViewById(R.id.studentHubProcessingText)
+        studentHubPendingText = view.findViewById(R.id.studentHubPendingText)
+        alumniSolvedText = view.findViewById(R.id.alumniSolvedText)
+        alumniProcessingText = view.findViewById(R.id.alumniProcessingText)
+        alumniPendingText = view.findViewById(R.id.alumniPendingText)
+
 
 
         // Create notification channel
@@ -155,6 +189,41 @@ class AdminDashboardFragment : Fragment() {
             Log.d(TAG, "Notification channel created")
         }
     }
+
+    private fun updateCategoryUI(
+        category: String,
+        stats: QueryStats?,
+        progressBar: ProgressBar,
+        solvedText: TextView,
+        processingText: TextView,
+        pendingText: TextView
+    ) {
+        stats?.let {
+            val total = it.total.toFloat()
+            if (total > 0) {
+                val solvedPercent = (it.solvedCount / total * 100)
+                val processingPercent = (it.processingCount / total * 100)
+                val pendingPercent = (it.pendingCount / total * 100)
+
+                progressBar.max = 100
+                progressBar.progress = solvedPercent.toInt()
+                progressBar.secondaryProgress = (solvedPercent + processingPercent).toInt()
+
+                solvedText.text = String.format(Locale.getDefault(), "Solved\n%.1f%%", solvedPercent)
+                processingText.text = String.format(Locale.getDefault(), "Processing\n%.1f%%", processingPercent)
+                pendingText.text = String.format(Locale.getDefault(), "Pending\n%.1f%%", pendingPercent)
+            } else {
+                progressBar.progress = 0
+                progressBar.secondaryProgress = 0
+                solvedText.text = "Solved\n0.0%"
+                processingText.text = "Processing\n0.0%"
+                pendingText.text = "Pending\n0.0%"
+            }
+        }
+    }
+
+
+
 
 
     private fun setupNewQueryListeners() {
@@ -569,96 +638,151 @@ class AdminDashboardFragment : Fragment() {
     private fun updateQueryAnalytics() {
         val queryTasks = mutableListOf<Task<QuerySnapshot>>()
 
-        // Add tasks for regular queries
         val collectionRefs = mapOf(
             "campus" to db.collection("CampusQuery"),
-            "alumni" to db.collection("AlumniQuery"),
-            "studentHub" to db.collection("StudentHubQuery")
+            "studentHub" to db.collection("StudentHubQuery"),
+            "alumni" to db.collection("AlumniQuery")
         )
 
         collectionRefs.values.forEach { ref ->
             queryTasks.add(ref.get())
         }
 
-        // Add task for SolvedQueries
         queryTasks.add(db.collection("SolvedQueries").get())
 
         Tasks.whenAllSuccess<QuerySnapshot>(queryTasks)
             .addOnSuccessListener { snapshots ->
-                var campusQueries = 0
-                var studentHubQueries = 0
-                var alumniQueries = 0
+                val stats = mutableMapOf<String, QueryStats>()
+                stats["campus"] = QueryStats()
+                stats["studentHub"] = QueryStats()
+                stats["alumni"] = QueryStats()
 
-                var solvedCount = 0
-                var pendingCount = 0
-                var processingCount = 0
-                var totalQueries = 0
+                var globalSolved = 0
+                var globalProcessing = 0
+                var globalPending = 0
 
-                // Process first three snapshots (regular query collections)
+                // Process regular collections
                 snapshots.take(3).forEachIndexed { index, snapshot ->
-                    when (index) {
-                        0 -> campusQueries = snapshot.size()
-                        1 -> alumniQueries = snapshot.size()
-                        2 -> studentHubQueries = snapshot.size()
+                    val category = when (index) {
+                        0 -> "campus"
+                        1 -> "studentHub"
+                        2 -> "alumni"
+                        else -> null
                     }
 
-                    snapshot.documents.forEach { doc ->
-                        when (doc.getString("status")) {
-                            "Pending" -> pendingCount++
-                            "Processing" -> processingCount++
-                            // Don't count "Solved" here anymore
+                    category?.let { cat ->
+                        snapshot.documents.forEach { doc ->
+                            when (doc.getString("status")) {
+                                "Pending" -> {
+                                    stats[cat]?.pendingCount = (stats[cat]?.pendingCount ?: 0) + 1
+                                    globalPending++
+                                }
+
+                                "Processing" -> {
+                                    stats[cat]?.processingCount =
+                                        (stats[cat]?.processingCount ?: 0) + 1
+                                    globalProcessing++
+                                }
+
+                                "Solved" -> {
+                                    stats[cat]?.solvedCount = (stats[cat]?.solvedCount ?: 0) + 1
+                                    globalSolved++
+                                }
+                            }
                         }
-                    }
-                    // Only add pending and processing queries to total
-                    totalQueries += snapshot.documents.count { doc ->
-                        val status = doc.getString("status")
-                        status == "Pending" || status == "Processing"
                     }
                 }
 
-                // Process SolvedQueries collection (last snapshot)
+                // Process SolvedQueries
                 val solvedSnapshot = snapshots.last()
-                solvedCount = solvedSnapshot.size()
-                totalQueries += solvedCount // Add solved queries to total
+                solvedSnapshot.documents.forEach { doc ->
+                    val category = when {
+                        doc.getString("queryType")
+                            ?.contains("Campus", ignoreCase = true) == true -> "campus"
 
-                if (totalQueries > 0) {
-                    // Update pie chart with percentages
-                    val entries = mutableListOf<PieEntry>()
+                        doc.getString("queryType")
+                            ?.contains("Student Hub", ignoreCase = true) == true -> "studentHub"
 
-                    if (campusQueries > 0) entries.add(PieEntry(campusQueries.toFloat(), "Campus"))
-                    if (alumniQueries > 0) entries.add(PieEntry(alumniQueries.toFloat(), "Alumni"))
-                    if (studentHubQueries > 0) entries.add(PieEntry(studentHubQueries.toFloat(), "Student Hub"))
+                        doc.getString("queryType")
+                            ?.contains("Alumni", ignoreCase = true) == true -> "alumni"
 
-                    val dataSet = PieDataSet(entries, "Query Types")
-                    dataSet.colors = listOf(
-                        Color.parseColor("#7DF9FF"),
-                        Color.parseColor("#6f42c1"),
-                        Color.parseColor("#e83e8c")
-                    )
-                    dataSet.valueTextColor = Color.WHITE
-                    dataSet.valueTextSize = 12f
+                        else -> null
+                    }
+                    category?.let {
+                        stats[it]?.solvedCount = (stats[it]?.solvedCount ?: 0) + 1
+                        globalSolved++
+                    }
+                }
 
-                    val pieData = PieData(dataSet)
-                    pieChart.data = pieData
-                    pieChart.invalidate()
+                // Update Category UIs
+                updateCategoryUI(
+                    "campus", stats["campus"], campusQueryProgress, campusSolvedText,
+                    campusProcessingText, campusPendingText
+                )
+                updateCategoryUI(
+                    "studentHub", stats["studentHub"], studentHubQueryProgress,
+                    studentHubSolvedText, studentHubProcessingText, studentHubPendingText
+                )
+                updateCategoryUI(
+                    "alumni", stats["alumni"], alumniQueryProgress, alumniSolvedText,
+                    alumniProcessingText, alumniPendingText
+                )
 
-                    // Update status bar and percentages
-                    val solvedPercentage = "%.1f".format(solvedCount.toFloat() / totalQueries * 100)
-                    val processingPercentage = "%.1f".format(processingCount.toFloat() / totalQueries * 100)
-                    val pendingPercentage = "%.1f".format(pendingCount.toFloat() / totalQueries * 100)
-
-                    solvedText.text = "Solved\n$solvedPercentage%"
-                    processingText.text = "Processing\n$processingPercentage%"
-                    pendingText.text = "Pending\n$pendingPercentage%"
+                // Update Global Progress
+                val globalTotal = globalSolved + globalProcessing + globalPending
+                if (globalTotal > 0) {
+                    val solvedPercent = globalSolved.toFloat() / globalTotal * 100
+                    val processingPercent = globalProcessing.toFloat() / globalTotal * 100
+                    val pendingPercent = globalPending.toFloat() / globalTotal * 100
 
                     queryStatusProgress.max = 100
-                    queryStatusProgress.progress = (solvedCount.toFloat() / totalQueries * 100).toInt()
-                    queryStatusProgress.secondaryProgress = ((solvedCount + processingCount).toFloat() / totalQueries * 100).toInt()
+                    queryStatusProgress.progress = solvedPercent.toInt()
+                    queryStatusProgress.secondaryProgress =
+                        (solvedPercent + processingPercent).toInt()
+
+                    solvedText.text =
+                        String.format(Locale.getDefault(), "Solved\n%.1f%%", solvedPercent)
+                    processingText.text =
+                        String.format(Locale.getDefault(), "Processing\n%.1f%%", processingPercent)
+                    pendingText.text =
+                        String.format(Locale.getDefault(), "Pending\n%.1f%%", pendingPercent)
+                }
+
+                // Update pie chart
+                if (globalTotal > 0) {
+                    val entries = mutableListOf<PieEntry>()
+                    stats.forEach { (category, categoryStats) ->
+                        val total = categoryStats.total
+                        if (total > 0) {
+                            val label = when (category) {
+                                "campus" -> "Campus"
+                                "studentHub" -> "Student Hub"
+                                "alumni" -> "Alumni"
+                                else -> category
+                            }
+                            entries.add(PieEntry(total.toFloat(), label))
+                        }
+                    }
+
+                    if (entries.isNotEmpty()) {
+                        val dataSet = PieDataSet(entries, "Query Types")
+                        dataSet.colors = listOf(
+                            Color.parseColor("#7DF9FF"),
+                            Color.parseColor("#6f42c1"),
+                            Color.parseColor("#e83e8c")
+                        )
+                        dataSet.valueTextColor = Color.WHITE
+                        dataSet.valueTextSize = 12f
+
+                        val pieData = PieData(dataSet)
+                        pieChart.data = pieData
+                        pieChart.invalidate()
+                    }
                 }
             }
             .addOnFailureListener { exception ->
                 Log.e("QueryAnalytics", "Error getting query data: ${exception.message}")
-                Toast.makeText(context, "Error loading query data", Toast.LENGTH_SHORT).show()
+
             }
     }
 
@@ -689,11 +813,5 @@ class AdminDashboardFragment : Fragment() {
             Toast.makeText(context, "Error during logout. Please try again.", Toast.LENGTH_SHORT).show()
         }
     }
-
-
-
-
-
-
 
 }
