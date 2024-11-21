@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/dark_background">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Admin Settings"
+            android:textAlignment="center"
+            android:textSize="24sp"
+            android:textColor="@color/electric_blue"
+            android:layout_marginBottom="24dp"/>
+
+        <!-- Language Settings Section -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Language"
+            android:textSize="18sp"
+            android:textColor="@color/electric_blue"
+            android:layout_marginBottom="8dp"/>
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
+            app:cardBackgroundColor="@color/card_background"
+            app:strokeColor="@color/electric_blue"
+            app:strokeWidth="1dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <RadioGroup
+                    android:id="@+id/languageGroup"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <RadioButton
+                        android:id="@+id/englishRadio"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="English"
+                        android:textColor="@android:color/white"
+                        android:buttonTint="@color/electric_blue"
+                        android:padding="8dp"/>
+
+                    <RadioButton
+                        android:id="@+id/afrikaansRadio"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Afrikaans"
+                        android:textColor="@android:color/white"
+                        android:buttonTint="@color/electric_blue"
+                        android:padding="8dp"/>
+
+                    <RadioButton
+                        android:id="@+id/zuluRadio"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="isiZulu"
+                        android:textColor="@android:color/white"
+                        android:buttonTint="@color/electric_blue"
+                        android:padding="8dp"/>
+                </RadioGroup>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Notification Settings Section -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Notifications"
+            android:textSize="18sp"
+            android:textColor="@color/electric_blue"
+            android:layout_marginBottom="8dp"/>
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
+            app:cardBackgroundColor="@color/card_background"
+            app:strokeColor="@color/electric_blue"
+            app:strokeWidth="1dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <com.google.android.material.switchmaterial.SwitchMaterial
+                    android:id="@+id/notificationSwitch"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Enable Notifications"
+                    android:textColor="@android:color/white"
+                    android:padding="8dp"
+                    app:trackTint="@color/electric_blue"
+                    app:thumbTint="@android:color/white"/>
+
+                <com.google.android.material.switchmaterial.SwitchMaterial
+                    android:id="@+id/soundSwitch"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Notification Sound"
+                    android:textColor="@android:color/white"
+                    android:padding="8dp"
+                    app:trackTint="@color/electric_blue"
+                    app:thumbTint="@android:color/white"/>
+
+                <com.google.android.material.switchmaterial.SwitchMaterial
+                    android:id="@+id/queryAlertSwitch"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="New Query Alerts"
+                    android:textColor="@android:color/white"
+                    android:padding="8dp"
+                    app:trackTint="@color/electric_blue"
+                    app:thumbTint="@android:color/white"/>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Display Settings Section -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Display"
+            android:textSize="18sp"
+            android:textColor="@color/electric_blue"
+            android:layout_marginBottom="8dp"/>
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
+            app:cardBackgroundColor="@color/card_background"
+            app:strokeColor="@color/electric_blue"
+            app:strokeWidth="1dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <com.google.android.material.switchmaterial.SwitchMaterial
+                    android:id="@+id/darkModeSwitch"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Dark Mode"
+                    android:textColor="@android:color/white"
+                    android:padding="8dp"
+                    app:trackTint="@color/electric_blue"
+                    app:thumbTint="@android:color/white"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Text Size"
+                    android:textColor="@android:color/white"
+                    android:layout_marginTop="8dp"/>
+
+                <SeekBar
+                    android:id="@+id/textSizeSeekBar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:progress="50"
+                    android:progressTint="@color/electric_blue"
+                    android:thumbTint="@color/electric_blue"
+                    android:padding="8dp"/>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <Button
+            android:id="@+id/saveSettingsButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Save Settings"
+            android:backgroundTint="@color/electric_blue"
+            android:textColor="@android:color/white"/>
+
+    </LinearLayout>
+</ScrollView>
