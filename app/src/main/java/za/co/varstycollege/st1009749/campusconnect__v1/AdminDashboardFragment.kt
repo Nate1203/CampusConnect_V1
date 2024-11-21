@@ -37,6 +37,14 @@ import java.util.Locale
 import android.app.Dialog
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.github.mikephil.charting.charts.BarChart
+import com.github.mikephil.charting.charts.Chart
+import com.github.mikephil.charting.components.Legend
+import com.github.mikephil.charting.components.XAxis
+import com.github.mikephil.charting.data.BarData
+import com.github.mikephil.charting.data.BarDataSet
+import com.github.mikephil.charting.data.BarEntry
+import com.github.mikephil.charting.formatter.ValueFormatter
 
 class AdminDashboardFragment : Fragment() {
 
@@ -68,6 +76,10 @@ class AdminDashboardFragment : Fragment() {
     private lateinit var alumniSolvedText: TextView
     private lateinit var alumniProcessingText: TextView
     private lateinit var alumniPendingText: TextView
+    private lateinit var expandButton: Button
+    private lateinit var categoryProgressBars: LinearLayout
+    private var isExpanded = false
+    private lateinit var resolutionTimeChart: BarChart
 
     private data class QueryStats(
         var solvedCount: Int = 0,
@@ -77,6 +89,14 @@ class AdminDashboardFragment : Fragment() {
         val total: Int get() = solvedCount + processingCount + pendingCount
     }
 
+    private data class QueryResolutionTime(
+        val queryType: String,
+        val submittedDate: Date,
+        val solvedDate: Date
+    ) {
+        val resolutionTimeHours: Float
+            get() = ((solvedDate.time - submittedDate.time) / (1000f * 60f * 60f))
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -127,8 +147,8 @@ class AdminDashboardFragment : Fragment() {
         alumniSolvedText = view.findViewById(R.id.alumniSolvedText)
         alumniProcessingText = view.findViewById(R.id.alumniProcessingText)
         alumniPendingText = view.findViewById(R.id.alumniPendingText)
-
-
+        expandButton = view.findViewById(R.id.expandButton)
+        categoryProgressBars = view.findViewById(R.id.categoryProgressBars)
 
         // Create notification channel
         createNotificationChannel()
@@ -156,6 +176,9 @@ class AdminDashboardFragment : Fragment() {
 
         // Set Up Level Bar
         setupLevelSystem()
+
+        // Set up expand/collapse functionality
+        setupExpandButton()
 
         //Go to Solve Queries page
         solveQueriesButton.setOnClickListener {
@@ -190,6 +213,35 @@ class AdminDashboardFragment : Fragment() {
         }
     }
 
+    private fun setupExpandButton() {
+        expandButton.setOnClickListener {
+            isExpanded = !isExpanded
+            expandButton.text = if (isExpanded) "Collapse" else "Expand"
+
+            if (isExpanded) {
+                categoryProgressBars.visibility = View.VISIBLE
+                categoryProgressBars.alpha = 0f
+                categoryProgressBars.animate()
+                    .alpha(1f)
+                    .setDuration(300)
+                    .start()
+            } else {
+                categoryProgressBars.animate()
+                    .alpha(0f)
+                    .setDuration(300)
+                    .withEndAction {
+                        categoryProgressBars.visibility = View.GONE
+                    }
+                    .start()
+            }
+
+            // Force an update of the progress bars
+            updateQueryAnalytics()
+        }
+    }
+
+
+
     private fun updateCategoryUI(
         category: String,
         stats: QueryStats?,
@@ -223,6 +275,15 @@ class AdminDashboardFragment : Fragment() {
     }
 
 
+    private fun setupResolutionTimeChart() {
+        resolutionTimeChart.apply {
+            setNoDataText("Loading...")
+            setNoDataTextColor(Color.WHITE)
+            description.isEnabled = false
+            setDrawGridBackground(false)
+            setPinchZoom(false)
+        }
+    }
 
 
 
@@ -663,7 +724,7 @@ class AdminDashboardFragment : Fragment() {
 
                 // Process regular collections
                 snapshots.take(3).forEachIndexed { index, snapshot ->
-                    val category = when (index) {
+                    val category = when(index) {
                         0 -> "campus"
                         1 -> "studentHub"
                         2 -> "alumni"
@@ -677,13 +738,10 @@ class AdminDashboardFragment : Fragment() {
                                     stats[cat]?.pendingCount = (stats[cat]?.pendingCount ?: 0) + 1
                                     globalPending++
                                 }
-
                                 "Processing" -> {
-                                    stats[cat]?.processingCount =
-                                        (stats[cat]?.processingCount ?: 0) + 1
+                                    stats[cat]?.processingCount = (stats[cat]?.processingCount ?: 0) + 1
                                     globalProcessing++
                                 }
-
                                 "Solved" -> {
                                     stats[cat]?.solvedCount = (stats[cat]?.solvedCount ?: 0) + 1
                                     globalSolved++
@@ -697,15 +755,9 @@ class AdminDashboardFragment : Fragment() {
                 val solvedSnapshot = snapshots.last()
                 solvedSnapshot.documents.forEach { doc ->
                     val category = when {
-                        doc.getString("queryType")
-                            ?.contains("Campus", ignoreCase = true) == true -> "campus"
-
-                        doc.getString("queryType")
-                            ?.contains("Student Hub", ignoreCase = true) == true -> "studentHub"
-
-                        doc.getString("queryType")
-                            ?.contains("Alumni", ignoreCase = true) == true -> "alumni"
-
+                        doc.getString("queryType")?.contains("Campus", ignoreCase = true) == true -> "campus"
+                        doc.getString("queryType")?.contains("Student Hub", ignoreCase = true) == true -> "studentHub"
+                        doc.getString("queryType")?.contains("Alumni", ignoreCase = true) == true -> "alumni"
                         else -> null
                     }
                     category?.let {
@@ -714,19 +766,15 @@ class AdminDashboardFragment : Fragment() {
                     }
                 }
 
-                // Update Category UIs
-                updateCategoryUI(
-                    "campus", stats["campus"], campusQueryProgress, campusSolvedText,
-                    campusProcessingText, campusPendingText
-                )
-                updateCategoryUI(
-                    "studentHub", stats["studentHub"], studentHubQueryProgress,
-                    studentHubSolvedText, studentHubProcessingText, studentHubPendingText
-                )
-                updateCategoryUI(
-                    "alumni", stats["alumni"], alumniQueryProgress, alumniSolvedText,
-                    alumniProcessingText, alumniPendingText
-                )
+                // Update Category UIs if expanded
+                if (isExpanded) {
+                    updateCategoryUI("campus", stats["campus"], campusQueryProgress,
+                        campusSolvedText, campusProcessingText, campusPendingText)
+                    updateCategoryUI("studentHub", stats["studentHub"], studentHubQueryProgress,
+                        studentHubSolvedText, studentHubProcessingText, studentHubPendingText)
+                    updateCategoryUI("alumni", stats["alumni"], alumniQueryProgress,
+                        alumniSolvedText, alumniProcessingText, alumniPendingText)
+                }
 
                 // Update Global Progress
                 val globalTotal = globalSolved + globalProcessing + globalPending
@@ -737,55 +785,52 @@ class AdminDashboardFragment : Fragment() {
 
                     queryStatusProgress.max = 100
                     queryStatusProgress.progress = solvedPercent.toInt()
-                    queryStatusProgress.secondaryProgress =
-                        (solvedPercent + processingPercent).toInt()
+                    queryStatusProgress.secondaryProgress = (solvedPercent + processingPercent).toInt()
 
-                    solvedText.text =
-                        String.format(Locale.getDefault(), "Solved\n%.1f%%", solvedPercent)
-                    processingText.text =
-                        String.format(Locale.getDefault(), "Processing\n%.1f%%", processingPercent)
-                    pendingText.text =
-                        String.format(Locale.getDefault(), "Pending\n%.1f%%", pendingPercent)
+                    solvedText.text = String.format(Locale.getDefault(), "Solved\n%.1f%%", solvedPercent)
+                    processingText.text = String.format(Locale.getDefault(), "Processing\n%.1f%%", processingPercent)
+                    pendingText.text = String.format(Locale.getDefault(), "Pending\n%.1f%%", pendingPercent)
                 }
 
-                // Update pie chart
-                if (globalTotal > 0) {
-                    val entries = mutableListOf<PieEntry>()
-                    stats.forEach { (category, categoryStats) ->
-                        val total = categoryStats.total
-                        if (total > 0) {
-                            val label = when (category) {
-                                "campus" -> "Campus"
-                                "studentHub" -> "Student Hub"
-                                "alumni" -> "Alumni"
-                                else -> category
-                            }
-                            entries.add(PieEntry(total.toFloat(), label))
-                        }
-                    }
-
-                    if (entries.isNotEmpty()) {
-                        val dataSet = PieDataSet(entries, "Query Types")
-                        dataSet.colors = listOf(
-                            Color.parseColor("#7DF9FF"),
-                            Color.parseColor("#6f42c1"),
-                            Color.parseColor("#e83e8c")
-                        )
-                        dataSet.valueTextColor = Color.WHITE
-                        dataSet.valueTextSize = 12f
-
-                        val pieData = PieData(dataSet)
-                        pieChart.data = pieData
-                        pieChart.invalidate()
-                    }
-                }
+                // Update pie chart (your existing pie chart code remains the same)
+                updatePieChart(stats)
             }
             .addOnFailureListener { exception ->
                 Log.e("QueryAnalytics", "Error getting query data: ${exception.message}")
-
+                Toast.makeText(context, "Error loading query data", Toast.LENGTH_SHORT).show()
             }
     }
 
+    private fun updatePieChart(stats: Map<String, QueryStats>) {
+        val entries = mutableListOf<PieEntry>()
+        stats.forEach { (category, categoryStats) ->
+            val total = categoryStats.total
+            if (total > 0) {
+                val label = when(category) {
+                    "campus" -> "Campus"
+                    "studentHub" -> "Student Hub"
+                    "alumni" -> "Alumni"
+                    else -> category
+                }
+                entries.add(PieEntry(total.toFloat(), label))
+            }
+        }
+
+        if (entries.isNotEmpty()) {
+            val dataSet = PieDataSet(entries, "Query Types")
+            dataSet.colors = listOf(
+                Color.parseColor("#7DF9FF"),
+                Color.parseColor("#6f42c1"),
+                Color.parseColor("#e83e8c")
+            )
+            dataSet.valueTextColor = Color.WHITE
+            dataSet.valueTextSize = 12f
+
+            val pieData = PieData(dataSet)
+            pieChart.data = pieData
+            pieChart.invalidate()
+        }
+    }
 
     private fun performLogout() {
         try {
