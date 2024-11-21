@@ -142,6 +142,7 @@
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>
 
+
                 <androidx.cardview.widget.CardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -155,14 +156,32 @@
                         android:orientation="vertical"
                         android:padding="16dp">
 
-
-                        <TextView
-                            android:layout_width="wrap_content"
+                        <LinearLayout
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="Global Query Completion"
-                            android:textColor="@android:color/white"
-                            android:textSize="18sp"
-                            android:layout_marginBottom="16dp"/>
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical">
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="Global Query Completion"
+                                android:textColor="@android:color/white"
+                                android:textSize="18sp"/>
+
+                            <Button
+                                android:id="@+id/expandButton"
+                                android:layout_width="wrap_content"
+                                android:layout_height="36dp"
+                                android:text="Expand"
+                                android:textSize="12sp"
+                                android:backgroundTint="@color/electric_blue"
+                                android:textColor="@android:color/white"
+                                android:minWidth="0dp"
+                                android:paddingStart="12dp"
+                                android:paddingEnd="12dp"/>
+                        </LinearLayout>
 
                         <ProgressBar
                             android:id="@+id/queryStatusProgress"
@@ -170,6 +189,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="24dp"
                             android:progressDrawable="@drawable/global_query_progress"
+                            android:layout_marginTop="8dp"
                             android:layout_marginBottom="8dp"/>
 
                         <LinearLayout
@@ -178,14 +198,12 @@
                             android:orientation="horizontal"
                             android:gravity="center">
 
-
                             <TextView
                                 android:id="@+id/solvedText"
-                                android:paddingRight="10dp"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:textColor="#28a745"/>
-
+                                android:textColor="#28a745"
+                                android:layout_marginEnd="16dp"/>
 
                             <TextView
                                 android:id="@+id/processingText"
@@ -194,169 +212,164 @@
                                 android:textColor="#17a2b8"
                                 android:layout_marginEnd="16dp"/>
 
-
                             <TextView
                                 android:id="@+id/pendingText"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:textColor="#ffc107"
-                                android:layout_marginEnd="16dp"/>
-
-                        </LinearLayout>
-
-
-                    </LinearLayout>
-
-
-                </androidx.cardview.widget.CardView>
-
-
-                <androidx.cardview.widget.CardView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    app:cardBackgroundColor="@color/card_background"
-                    app:cardCornerRadius="8dp"
-                    app:cardElevation="4dp">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:padding="16dp">
-
-                        <!-- Campus Queries -->
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Campus Queries"
-                            android:textColor="@android:color/white"
-                            android:textSize="18sp"
-                            android:layout_marginBottom="16dp"/>
-
-                        <ProgressBar
-                            android:id="@+id/campusQueryProgress"
-                            style="@style/Widget.AppCompat.ProgressBar.Horizontal"
-                            android:layout_width="match_parent"
-                            android:layout_height="24dp"
-                            android:progressDrawable="@drawable/global_query_progress"
-                            android:layout_marginBottom="8dp"/>
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:gravity="center"
-                            android:layout_marginBottom="24dp">
-
-                            <TextView
-                                android:id="@+id/campusSolvedText"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:textColor="#28a745"
-                                android:layout_marginEnd="16dp"/>
-
-                            <TextView
-                                android:id="@+id/campusProcessingText"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:textColor="#17a2b8"
-                                android:layout_marginEnd="16dp"/>
-
-                            <TextView
-                                android:id="@+id/campusPendingText"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
                                 android:textColor="#ffc107"/>
                         </LinearLayout>
 
-                        <!-- Student Hub Queries -->
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Student Hub Queries"
-                            android:textColor="@android:color/white"
-                            android:textSize="18sp"
-                            android:layout_marginBottom="16dp"/>
-
-                        <ProgressBar
-                            android:id="@+id/studentHubQueryProgress"
-                            style="@style/Widget.AppCompat.ProgressBar.Horizontal"
-                            android:layout_width="match_parent"
-                            android:layout_height="24dp"
-                            android:progressDrawable="@drawable/global_query_progress"
-                            android:layout_marginBottom="8dp"/>
-
+                        <!-- Collapsible section -->
                         <LinearLayout
+                            android:id="@+id/categoryProgressBars"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:gravity="center"
-                            android:layout_marginBottom="24dp">
+                            android:orientation="vertical"
+                            android:visibility="gone"
+                            android:layout_marginTop="16dp">
 
+                            <!-- Campus Queries -->
                             <TextView
-                                android:id="@+id/studentHubSolvedText"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:textColor="#28a745"
-                                android:layout_marginEnd="16dp"/>
+                                android:text="Campus Queries"
+                                android:textColor="@android:color/white"
+                                android:textSize="16sp"
+                                android:layout_marginBottom="8dp"/>
 
+                            <ProgressBar
+                                android:id="@+id/campusQueryProgress"
+                                style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+                                android:layout_width="match_parent"
+                                android:layout_height="16dp"
+                                android:progressDrawable="@drawable/global_query_progress"
+                                android:layout_marginBottom="4dp"/>
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:gravity="center"
+                                android:layout_marginBottom="16dp">
+
+                                <TextView
+                                    android:id="@+id/campusSolvedText"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:textColor="#28a745"
+                                    android:textSize="12sp"
+                                    android:layout_marginEnd="16dp"/>
+
+                                <TextView
+                                    android:id="@+id/campusProcessingText"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:textColor="#17a2b8"
+                                    android:textSize="12sp"
+                                    android:layout_marginEnd="16dp"/>
+
+                                <TextView
+                                    android:id="@+id/campusPendingText"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:textColor="#ffc107"
+                                    android:textSize="12sp"/>
+                            </LinearLayout>
+
+                            <!-- Student Hub Queries -->
                             <TextView
-                                android:id="@+id/studentHubProcessingText"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:textColor="#17a2b8"
-                                android:layout_marginEnd="16dp"/>
+                                android:text="Student Hub Queries"
+                                android:textColor="@android:color/white"
+                                android:textSize="16sp"
+                                android:layout_marginBottom="8dp"/>
 
+                            <ProgressBar
+                                android:id="@+id/studentHubQueryProgress"
+                                style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+                                android:layout_width="match_parent"
+                                android:layout_height="16dp"
+                                android:progressDrawable="@drawable/global_query_progress"
+                                android:layout_marginBottom="4dp"/>
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:gravity="center"
+                                android:layout_marginBottom="16dp">
+
+                                <TextView
+                                    android:id="@+id/studentHubSolvedText"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:textColor="#28a745"
+                                    android:textSize="12sp"
+                                    android:layout_marginEnd="16dp"/>
+
+                                <TextView
+                                    android:id="@+id/studentHubProcessingText"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:textColor="#17a2b8"
+                                    android:textSize="12sp"
+                                    android:layout_marginEnd="16dp"/>
+
+                                <TextView
+                                    android:id="@+id/studentHubPendingText"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:textColor="#ffc107"
+                                    android:textSize="12sp"/>
+                            </LinearLayout>
+
+                            <!-- Alumni Queries -->
                             <TextView
-                                android:id="@+id/studentHubPendingText"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:textColor="#ffc107"/>
-                        </LinearLayout>
+                                android:text="Alumni Queries"
+                                android:textColor="@android:color/white"
+                                android:textSize="16sp"
+                                android:layout_marginBottom="8dp"/>
 
-                        <!-- Alumni Queries -->
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Alumni Queries"
-                            android:textColor="@android:color/white"
-                            android:textSize="18sp"
-                            android:layout_marginBottom="16dp"/>
+                            <ProgressBar
+                                android:id="@+id/alumniQueryProgress"
+                                style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+                                android:layout_width="match_parent"
+                                android:layout_height="16dp"
+                                android:progressDrawable="@drawable/global_query_progress"
+                                android:layout_marginBottom="4dp"/>
 
-                        <ProgressBar
-                            android:id="@+id/alumniQueryProgress"
-                            style="@style/Widget.AppCompat.ProgressBar.Horizontal"
-                            android:layout_width="match_parent"
-                            android:layout_height="24dp"
-                            android:progressDrawable="@drawable/global_query_progress"
-                            android:layout_marginBottom="8dp"/>
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:gravity="center">
-
-                            <TextView
-                                android:id="@+id/alumniSolvedText"
-                                android:layout_width="wrap_content"
+                            <LinearLayout
+                                android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:textColor="#28a745"
-                                android:layout_marginEnd="16dp"/>
+                                android:orientation="horizontal"
+                                android:gravity="center">
 
-                            <TextView
-                                android:id="@+id/alumniProcessingText"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:textColor="#17a2b8"
-                                android:layout_marginEnd="16dp"/>
+                                <TextView
+                                    android:id="@+id/alumniSolvedText"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:textColor="#28a745"
+                                    android:textSize="12sp"
+                                    android:layout_marginEnd="16dp"/>
 
-                            <TextView
-                                android:id="@+id/alumniPendingText"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:textColor="#ffc107"/>
+                                <TextView
+                                    android:id="@+id/alumniProcessingText"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:textColor="#17a2b8"
+                                    android:textSize="12sp"
+                                    android:layout_marginEnd="16dp"/>
+
+                                <TextView
+                                    android:id="@+id/alumniPendingText"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:textColor="#ffc107"
+                                    android:textSize="12sp"/>
+                            </LinearLayout>
                         </LinearLayout>
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>
