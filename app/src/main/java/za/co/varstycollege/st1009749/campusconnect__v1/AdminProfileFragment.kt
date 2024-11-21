@@ -1,25 +1,47 @@
 package za.co.varstycollege.st1009749.campusconnect__v1
 
-import android.app.Dialog
+import android.app.Activity
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.google.android.material.textfield.TextInputEditText
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.SetOptions
+import com.google.firebase.storage.FirebaseStorage
+import de.hdodenhof.circleimageview.CircleImageView
 
 class AdminProfileFragment : Fragment() {
     private lateinit var auth: FirebaseAuth
     private lateinit var db: FirebaseFirestore
-    private lateinit var nameText: TextView
-    private lateinit var emailText: TextView
-    private lateinit var ratingText: TextView
+    private lateinit var storage: FirebaseStorage
+
+    // Profile Image Views
+    private lateinit var adminProfileImage: CircleImageView
+    private lateinit var changePhotoButton: ImageView
+
+    // Personal Info Fields
+    private lateinit var firstNameInput: TextInputEditText
+    private lateinit var middleNameInput: TextInputEditText
+    private lateinit var lastNameInput: TextInputEditText
+    private lateinit var emailInput: TextInputEditText
+    private var genderSpinner: AutoCompleteTextView? = null
+    private var pronounsSpinner: AutoCompleteTextView? = null
+
+    // Statistics
     private lateinit var totalQueriesText: TextView
-    private lateinit var averageResponseTimeText: TextView
-    private lateinit var profileImage: ImageView
-    private lateinit var editProfileButton: Button
+    private lateinit var adminRatingText: TextView
+    private lateinit var adminLevelText: TextView
+    private lateinit var saveButton: Button
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -35,131 +57,248 @@ class AdminProfileFragment : Fragment() {
         // Initialize Firebase
         auth = FirebaseAuth.getInstance()
         db = FirebaseFirestore.getInstance()
+        storage = FirebaseStorage.getInstance()
 
         // Initialize views
-        nameText = view.findViewById(R.id.adminNameText)
-        emailText = view.findViewById(R.id.adminEmailText)
-        ratingText = view.findViewById(R.id.adminRatingText)
-        totalQueriesText = view.findViewById(R.id.totalQueriesText)
-        averageResponseTimeText = view.findViewById(R.id.averageResponseTimeText)
-        profileImage = view.findViewById(R.id.adminProfileImage)
-        editProfileButton = view.findViewById(R.id.editProfileButton)
+        initializeViews(view)
+        setupSpinners()
 
         // Load admin data
         loadAdminProfile()
 
-        // Setup edit button
-        editProfileButton.setOnClickListener {
-            showEditProfileDialog()
+        // Setup click listeners
+        setupClickListeners()
+    }
+
+    private fun initializeViews(view: View) {
+        try {
+            // Profile Image Views
+            adminProfileImage = view.findViewById(R.id.adminProfileImage)
+            changePhotoButton = view.findViewById(R.id.changePhotoButton)
+
+            // Personal Info Fields
+            firstNameInput = view.findViewById(R.id.firstNameInput)
+            middleNameInput = view.findViewById(R.id.middleNameInput)
+            lastNameInput = view.findViewById(R.id.lastNameInput)
+            emailInput = view.findViewById(R.id.emailInput)
+            genderSpinner = view.findViewById(R.id.genderSpinner)
+            pronounsSpinner = view.findViewById(R.id.pronounsSpinner)
+
+
+            // Statistics
+            totalQueriesText = view.findViewById(R.id.totalQueriesText)
+            adminRatingText = view.findViewById(R.id.adminRatingText)
+            adminLevelText = view.findViewById(R.id.adminLevelText)
+            saveButton = view.findViewById(R.id.saveButton)
+
+        } catch (e: Exception) {
+            Log.e("AdminProfile", "Error initializing views: ${e.message}")
+            Toast.makeText(context, "Error initializing profile views", Toast.LENGTH_SHORT).show()
         }
     }
+
+    private fun setupSpinners() {
+        try {
+            context?.let { ctx ->
+                // Setup Gender Spinner
+                genderSpinner?.let { spinner ->
+                    val genders = arrayOf("Male", "Female", "Non-binary", "Prefer not to say")
+                    val genderAdapter = ArrayAdapter(ctx, R.layout.dropdown_item, genders)
+                    spinner.setAdapter(genderAdapter)
+                }
+
+                // Setup Pronouns Spinner
+                pronounsSpinner?.let { spinner ->
+                    val pronouns = arrayOf("He/Him", "She/Her", "They/Them", "Prefer not to say")
+                    val pronounsAdapter = ArrayAdapter(ctx, R.layout.dropdown_item, pronouns)
+                    spinner.setAdapter(pronounsAdapter)
+                }
+            }
+        } catch (e: Exception) {
+            Log.e("AdminProfile", "Error setting up spinners: ${e.message}")
+        }
+    }
+
+
+    private fun saveProfile() {
+        val currentUser = auth.currentUser
+        currentUser?.let { user ->
+            // Get all the values to save
+            val middleName = middleNameInput.text.toString()
+            val gender = genderSpinner?.text.toString()
+            val pronouns = pronounsSpinner?.text.toString()
+
+            // Create profile data map
+            val profileData = hashMapOf(
+                "userId" to user.uid,
+                "email" to user.email,
+                "firstName" to firstNameInput.text.toString(),
+                "middleName" to middleName,
+                "lastName" to lastNameInput.text.toString(),
+                "gender" to gender,
+                "pronouns" to pronouns,
+                "lastUpdated" to com.google.firebase.Timestamp.now()
+            )
+
+            // Save to AdminProfile collection
+            db.collection("AdminProfile")
+                .document(user.uid)
+                .set(profileData, SetOptions.merge())
+                .addOnSuccessListener {
+                    Toast.makeText(context, "Profile updated successfully", Toast.LENGTH_SHORT).show()
+                }
+                .addOnFailureListener { e ->
+                    Toast.makeText(context, "Failed to update profile: ${e.message}", Toast.LENGTH_SHORT).show()
+                }
+        }
+    }
+
 
     private fun loadAdminProfile() {
         val currentUser = auth.currentUser
         currentUser?.let { user ->
-            db.collection("admins")
-                .whereEqualTo("email", user.email)
+            emailInput.setText(user.email)
+
+            // First try to load from AdminProfile collection
+            db.collection("AdminProfile")
+                .document(user.uid)
                 .get()
-                .addOnSuccessListener { documents ->
-                    if (!documents.isEmpty) {
-                        val admin = documents.documents[0]
-                        nameText.text = "${admin.getString("firstName")} ${admin.getString("lastName")}"
-                        emailText.text = admin.getString("email")
+                .addOnSuccessListener { document ->
+                    if (document.exists()) {
+                        // Load data from AdminProfile
+                        firstNameInput.setText(document.getString("firstName"))
+                        middleNameInput.setText(document.getString("middleName"))
+                        lastNameInput.setText(document.getString("lastName"))
+                        genderSpinner?.setText(document.getString("gender") ?: "", false)
+                        pronounsSpinner?.setText(document.getString("pronouns") ?: "", false)
+
+                        // Load profile image
+                        loadProfileImage(user.uid)
 
                         // Load statistics
                         loadAdminStatistics(user.email!!)
+                    } else {
+                        // If no AdminProfile document exists, try loading from admins collection
+                        db.collection("admins")
+                            .whereEqualTo("email", user.email)
+                            .get()
+                            .addOnSuccessListener { documents ->
+                                if (!documents.isEmpty) {
+                                    val admin = documents.documents[0]
+                                    firstNameInput.setText(admin.getString("firstName"))
+                                    middleNameInput.setText(admin.getString("middleName"))
+                                    lastNameInput.setText(admin.getString("lastName"))
+                                    genderSpinner?.setText(admin.getString("gender") ?: "", false)
+                                    pronounsSpinner?.setText(admin.getString("pronouns") ?: "", false)
+
+                                    // Create initial AdminProfile document
+                                    saveProfile()
+                                }
+                            }
                     }
+                }
+                .addOnFailureListener { e ->
+                    Toast.makeText(context, "Error loading profile: ${e.message}", Toast.LENGTH_SHORT).show()
                 }
         }
     }
+
 
     private fun loadAdminStatistics(adminEmail: String) {
         // Load total solved queries
         db.collection("SolvedQueries")
             .whereEqualTo("adminEmail", adminEmail)
             .get()
-            .addOnSuccessListener { documents ->
-                totalQueriesText.text = "Total Queries Solved: ${documents.size()}"
+            .addOnSuccessListener { solvedDocs ->
+                val totalSolved = solvedDocs.size()
+                totalQueriesText.text = "Queries Solved: $totalSolved"
 
-                // Calculate average response time
-                var totalResponseTime = 0L
-                documents.forEach { doc ->
-                    val submittedDate = doc.getTimestamp("submittedDate")?.toDate()
-                    val solvedDate = doc.getTimestamp("solvedDate")?.toDate()
-                    if (submittedDate != null && solvedDate != null) {
-                        totalResponseTime += solvedDate.time - submittedDate.time
+                // Calculate admin level (1 level per 100 XP, 25 XP per query)
+                val xp = totalSolved * 25
+                val level = (xp / 100) + 1
+                adminLevelText.text = "Admin Level: $level"
+
+                // Calculate rating
+                db.collection("AdminReviews")
+                    .whereEqualTo("adminEmail", adminEmail)
+                    .get()
+                    .addOnSuccessListener { ratingDocs ->
+                        if (!ratingDocs.isEmpty) {
+                            var totalRating = 0f
+                            ratingDocs.forEach { doc ->
+                                totalRating += doc.getDouble("rating")?.toFloat() ?: 0f
+                            }
+                            val averageRating = totalRating / ratingDocs.size()
+                            adminRatingText.text = String.format("Rating: %.1f ★", averageRating)
+                        } else {
+                            adminRatingText.text = "No Ratings Yet"
+                        }
                     }
-                }
-                if (documents.size() > 0) {
-                    val averageTimeHours = (totalResponseTime / documents.size()) / (1000 * 60 * 60)
-                    averageResponseTimeText.text = "Average Response Time: ${averageTimeHours}h"
-                }
+                    .addOnFailureListener { e ->
+                        adminRatingText.text = "Rating: Error loading"
+                        Toast.makeText(context, "Error loading ratings: ${e.message}", Toast.LENGTH_SHORT).show()
+                    }
             }
-
-        // Load average rating
-        db.collection("AdminReviews")
-            .whereEqualTo("adminEmail", adminEmail)
-            .get()
-            .addOnSuccessListener { documents ->
-                if (!documents.isEmpty) {
-                    var totalRating = 0f
-                    documents.forEach { doc ->
-                        totalRating += doc.getDouble("rating")?.toFloat() ?: 0f
-                    }
-                    val averageRating = totalRating / documents.size()
-                    ratingText.text = String.format("%.1f ★", averageRating)
-                } else {
-                    ratingText.text = "No ratings yet"
-                }
+            .addOnFailureListener { e ->
+                totalQueriesText.text = "Queries: Error loading"
+                adminLevelText.text = "Level: Error loading"
+                Toast.makeText(context, "Error loading statistics: ${e.message}", Toast.LENGTH_SHORT).show()
             }
     }
 
-    private fun showEditProfileDialog() {
-        val dialog = Dialog(requireContext())
-        dialog.setContentView(R.layout.dialog_edit_profile)
 
-        val firstNameEdit = dialog.findViewById<EditText>(R.id.firstNameEdit)
-        val lastNameEdit = dialog.findViewById<EditText>(R.id.lastNameEdit)
-        val saveButton = dialog.findViewById<Button>(R.id.saveButton)
-
-        // Load current data
-        val currentUser = auth.currentUser
-        currentUser?.let { user ->
-            db.collection("admins")
-                .whereEqualTo("email", user.email)
-                .get()
-                .addOnSuccessListener { documents ->
-                    if (!documents.isEmpty) {
-                        val admin = documents.documents[0]
-                        firstNameEdit.setText(admin.getString("firstName"))
-                        lastNameEdit.setText(admin.getString("lastName"))
-                    }
-                }
+    private fun loadProfileImage(userId: String) {
+        val imageRef = storage.reference.child("admin_profiles/$userId.jpg")
+        imageRef.downloadUrl.addOnSuccessListener { uri ->
+            Glide.with(this)
+                .load(uri)
+                .placeholder(R.mipmap.ic_launcher_round)
+                .into(adminProfileImage)
         }
+    }
 
+    private fun pickImage() {
+        val intent = Intent().apply {
+            type = "image/*"
+            action = Intent.ACTION_GET_CONTENT
+        }
+        startActivityForResult(Intent.createChooser(intent, "Select Profile Picture"), PICK_IMAGE_REQUEST)
+    }
+
+    private fun setupClickListeners() {
         saveButton.setOnClickListener {
-            val firstName = firstNameEdit.text.toString()
-            val lastName = lastNameEdit.text.toString()
-
-            currentUser?.let { user ->
-                db.collection("admins")
-                    .whereEqualTo("email", user.email)
-                    .get()
-                    .addOnSuccessListener { documents ->
-                        if (!documents.isEmpty) {
-                            documents.documents[0].reference.update(mapOf(
-                                "firstName" to firstName,
-                                "lastName" to lastName
-                            )).addOnSuccessListener {
-                                loadAdminProfile()
-                                dialog.dismiss()
-                                Toast.makeText(context, "Profile updated successfully", Toast.LENGTH_SHORT).show()
-                            }
-                        }
-                    }
-            }
+            saveProfile()
         }
 
-        dialog.show()
+        changePhotoButton.setOnClickListener {
+            pickImage()
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (requestCode == PICK_IMAGE_REQUEST && resultCode == Activity.RESULT_OK && data?.data != null) {
+            val imageUri = data.data
+            uploadImage(imageUri!!)
+        }
+    }
+
+    private fun uploadImage(imageUri: Uri) {
+        val currentUser = auth.currentUser ?: return
+        val imageRef = storage.reference.child("admin_profiles/${currentUser.uid}.jpg")
+
+        imageRef.putFile(imageUri)
+            .addOnSuccessListener {
+                loadProfileImage(currentUser.uid)
+                Toast.makeText(context, "Profile picture updated", Toast.LENGTH_SHORT).show()
+            }
+            .addOnFailureListener { e ->
+                Toast.makeText(context, "Failed to upload image: ${e.message}", Toast.LENGTH_SHORT).show()
+            }
+    }
+
+    companion object {
+        private const val PICK_IMAGE_REQUEST = 1
     }
 }
