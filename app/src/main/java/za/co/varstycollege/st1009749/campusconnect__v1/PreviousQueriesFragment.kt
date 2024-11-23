@@ -16,6 +16,9 @@ import com.google.android.material.tabs.TabLayout
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import java.text.SimpleDateFormat
+import android.widget.ImageButton
+import androidx.core.content.ContextCompat
+import android.widget.LinearLayout
 import java.util.*
 
 class PreviousQueriesFragment : Fragment() {
@@ -200,6 +203,7 @@ class PreviousQueriesFragment : Fragment() {
             }
     }
 
+
     private fun fetchSolvedQueries(studentId: String) {
         db.collection("SolvedQueries")
             .whereEqualTo("studentNumber", studentId)
@@ -218,7 +222,10 @@ class PreviousQueriesFragment : Fragment() {
                                 status = "Solved",
                                 adminFeedback = document.getString("adminFeedback"),
                                 studentName = document.getString("studentName"),
-                                studentNumber = document.getString("studentNumber")
+                                studentNumber = document.getString("studentNumber"),
+                                adminEmail = document.getString("adminEmail"), // Add this line
+                                adminFirstName = document.getString("adminFirstName"), // Add this line
+                                adminLastName = document.getString("adminLastName")  // Add this line
                             )
                             queries.add(query)
                             Log.d("PreviousQueries", "Added solved query: ${query.name}")
@@ -233,6 +240,7 @@ class PreviousQueriesFragment : Fragment() {
                 Log.e("PreviousQueries", "Error fetching solved queries: ${e.message}")
             }
     }
+
 
     private fun updateQueryList() {
         if (sortByNewest) {
@@ -260,6 +268,7 @@ class PreviousQueriesFragment : Fragment() {
             val adminFeedbackText: TextView = view.findViewById(R.id.adminFeedbackText)
             val studentInfoText: TextView = view.findViewById(R.id.studentInfoText)
             val rateServiceButton: Button = view.findViewById(R.id.rateServiceButton)
+            val chatButton: ImageButton = view.findViewById(R.id.chatButton)
         }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): QueryViewHolder {
@@ -282,6 +291,7 @@ class PreviousQueriesFragment : Fragment() {
             holder.adminFeedbackText.visibility = View.GONE
             holder.studentInfoText.visibility = View.GONE
             holder.rateServiceButton.visibility = View.GONE
+            holder.chatButton.visibility = View.GONE  // Add this line
 
             // Show extra fields only for solved queries
             if (currentTab == "Solved") {
@@ -295,6 +305,19 @@ class PreviousQueriesFragment : Fragment() {
                 if (query.studentName?.isNotEmpty() == true && query.studentNumber?.isNotEmpty() == true) {
                     holder.studentInfoText.visibility = View.VISIBLE
                     holder.studentInfoText.text = "${query.studentName} (${query.studentNumber})"
+                }
+
+                // Show chat button for solved queries
+                holder.chatButton.visibility = View.VISIBLE
+                holder.chatButton.setOnClickListener {
+                    parentFragmentManager.beginTransaction()
+                        .replace(R.id.fragmentContainer, ChatFragment.newInstance(
+                            queryId = query.name,
+                            adminId = query.adminEmail ?: "",  // Changed this to use adminEmail
+                            studentId = query.studentNumber ?: ""
+                        ))
+                        .addToBackStack(null)
+                        .commit()
                 }
 
                 // Check if query has been rated
@@ -448,6 +471,9 @@ class PreviousQueriesFragment : Fragment() {
         val status: String,
         val adminFeedback: String? = null,
         val studentName: String? = null,
-        val studentNumber: String? = null
+        val studentNumber: String? = null,
+        val adminEmail: String? = null,      // Add this
+        val adminFirstName: String? = null,  // Add this
+        val adminLastName: String? = null    // Add this
     )
 }
