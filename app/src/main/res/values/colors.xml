@@ -15,11 +15,12 @@
     <color name="card_background">#2C2C2C</color>
     <color name="text_secondary">#B3FFFFFF</color>
     <color name="purple_pink">#FF69B4</color>
-    <color name="hint_color">#80FFFFFF</color>  <!-- 50% transparent white -->
-    <color name="search_bar_stroke">#33FFFFFF</color>  <!-- 20% transparent white -->
+    <color name="hint_color">#80FFFFFF</color>
+    <color name="search_bar_stroke">#33FFFFFF</color>
     <color name="search_bar_background">#1AFFFFFF</color>
     <color name="darker_purple">#8E44AD</color>
     <color name="green_success">#28a745</color>
     <color name="yellow_warning">#ffc107</color>
     <color name="blue_processing">#17a2b8</color>
+    <color name="gray">#424242</color>
 </resources>
