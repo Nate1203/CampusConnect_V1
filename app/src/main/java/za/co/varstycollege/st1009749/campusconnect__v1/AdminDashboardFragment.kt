@@ -37,6 +37,7 @@ import java.util.Locale
 import android.app.Dialog
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.room.util.query
 import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.charts.Chart
 import com.github.mikephil.charting.components.Legend
@@ -47,6 +48,7 @@ import com.github.mikephil.charting.data.BarEntry
 import com.github.mikephil.charting.formatter.ValueFormatter
 
 class AdminDashboardFragment : Fragment() {
+
 
     private lateinit var drawerLayout: DrawerLayout
     private lateinit var navigationView: NavigationView
@@ -81,6 +83,7 @@ class AdminDashboardFragment : Fragment() {
     private var isExpanded = false
     private lateinit var resolutionTimeChart: BarChart
 
+
     private data class QueryStats(
         var solvedCount: Int = 0,
         var processingCount: Int = 0,
@@ -89,14 +92,6 @@ class AdminDashboardFragment : Fragment() {
         val total: Int get() = solvedCount + processingCount + pendingCount
     }
 
-    private data class QueryResolutionTime(
-        val queryType: String,
-        val submittedDate: Date,
-        val solvedDate: Date
-    ) {
-        val resolutionTimeHours: Float
-            get() = ((solvedDate.time - submittedDate.time) / (1000f * 60f * 60f))
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -558,6 +553,14 @@ class AdminDashboardFragment : Fragment() {
                 R.id.nav_settings -> {
                     parentFragmentManager.beginTransaction()
                         .replace(R.id.fragmentContainer, AdminSettingsFragment())
+                        .addToBackStack(null)
+                        .commit()
+                    drawerLayout.closeDrawers()
+                    true
+                }
+                R.id.nav_chats -> {
+                    parentFragmentManager.beginTransaction()
+                        .replace(R.id.fragmentContainer, ChatListFragment())
                         .addToBackStack(null)
                         .commit()
                     drawerLayout.closeDrawers()
