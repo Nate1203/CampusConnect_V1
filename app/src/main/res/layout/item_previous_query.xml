@@ -111,6 +111,16 @@
                 android:layout_marginTop="8dp"
                 android:visibility="gone"/>
 
+            <ImageButton
+                android:id="@+id/chatButton"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_marginStart="8dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@drawable/ic_chat"
+                android:visibility="gone"
+                app:tint="@color/electric_blue" />
+
         </LinearLayout>
     </LinearLayout>
 
