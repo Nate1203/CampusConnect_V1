@@ -16,6 +16,7 @@ firebase-bom = "32.7.2"
 circleimageview = "3.1.0"
 glide = "4.16.0"
 mpandroidchart = "v3.1.0"
+room-ktx = "2.6.1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "core-ktx" }
@@ -42,6 +43,7 @@ firebase-common-ktx = { group = "com.google.firebase", name = "firebase-common-k
 # Image handling dependencies
 circleimageview = { group = "de.hdodenhof", name = "circleimageview", version.ref = "circleimageview" }
 glide = { group = "com.github.bumptech.glide", name = "glide", version.ref = "glide" }
+androidx-room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room-ktx" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
