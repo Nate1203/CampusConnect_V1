@@ -290,6 +290,14 @@ class StudentDashboardFragment : Fragment() {
                         .commit()
                     drawerLayout.closeDrawers()
                 }
+                R.id.nav_chats -> {
+                    parentFragmentManager.beginTransaction()
+                        .replace(R.id.fragmentContainer, ChatListFragment())
+                        .addToBackStack(null)
+                        .commit()
+                    drawerLayout.closeDrawers()
+                    true
+                }
                 R.id.nav_logout -> {
                     performLogout()
                 }
