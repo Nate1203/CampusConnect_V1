@@ -113,11 +113,12 @@
 
             <ImageButton
                 android:id="@+id/chatButton"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:layout_marginStart="8dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:src="@drawable/ic_chat"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Send Message"
+                android:backgroundTint="@color/electric_blue"
+                android:textColor="@android:color/white"
+                android:layout_marginTop="8dp"
                 android:visibility="gone"
                 app:tint="@color/electric_blue" />
 
