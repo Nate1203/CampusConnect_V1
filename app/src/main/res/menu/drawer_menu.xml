@@ -19,7 +19,7 @@
             android:title="Chats" />
         <item
             android:id="@+id/nav_FAQs"
-            android:icon="@drawable/ic_logout"
+            android:icon="@drawable/ic_faq"
             android:title="FAQs" />
         <item
             android:id="@+id/nav_settings"

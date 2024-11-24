@@ -268,7 +268,7 @@ class PreviousQueriesFragment : Fragment() {
             val adminFeedbackText: TextView = view.findViewById(R.id.adminFeedbackText)
             val studentInfoText: TextView = view.findViewById(R.id.studentInfoText)
             val rateServiceButton: Button = view.findViewById(R.id.rateServiceButton)
-            val chatButton: ImageButton = view.findViewById(R.id.chatButton)
+            val chatButton: Button = view.findViewById(R.id.chatButton)
         }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): QueryViewHolder {

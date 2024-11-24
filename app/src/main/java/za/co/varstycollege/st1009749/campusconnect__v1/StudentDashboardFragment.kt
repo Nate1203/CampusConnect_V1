@@ -301,6 +301,14 @@ class StudentDashboardFragment : Fragment() {
                 R.id.nav_logout -> {
                     performLogout()
                 }
+                R.id.nav_FAQs -> {
+                    parentFragmentManager.beginTransaction()
+                        .replace(R.id.fragmentContainer, FAQFragment())
+                        .addToBackStack(null)
+                        .commit()
+                    drawerLayout.closeDrawers()
+                    true
+                }
             }
             true
         }

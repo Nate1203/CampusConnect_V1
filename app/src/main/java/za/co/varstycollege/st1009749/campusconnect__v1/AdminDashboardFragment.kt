@@ -566,6 +566,15 @@ class AdminDashboardFragment : Fragment() {
                     drawerLayout.closeDrawers()
                     true
                 }
+                // Add this case to your navigation menu handler
+                R.id.nav_FAQs -> {
+                    parentFragmentManager.beginTransaction()
+                        .replace(R.id.fragmentContainer, AdminFAQFragment())
+                        .addToBackStack(null)
+                        .commit()
+                    drawerLayout.closeDrawers()
+                    true
+                }
                 R.id.nav_logout -> {
                     performLogout()
                 }
