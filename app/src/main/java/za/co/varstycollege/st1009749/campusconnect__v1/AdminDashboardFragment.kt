@@ -38,6 +38,7 @@ import android.app.Dialog
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.room.util.query
+import com.bumptech.glide.Glide
 import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.charts.Chart
 import com.github.mikephil.charting.components.Legend
@@ -46,6 +47,9 @@ import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
 import com.github.mikephil.charting.formatter.ValueFormatter
+import de.hdodenhof.circleimageview.CircleImageView
+import com.google.firebase.storage.FirebaseStorage
+import java.io.File
 
 class AdminDashboardFragment : Fragment() {
 
@@ -82,6 +86,8 @@ class AdminDashboardFragment : Fragment() {
     private lateinit var categoryProgressBars: LinearLayout
     private var isExpanded = false
     private lateinit var resolutionTimeChart: BarChart
+    private lateinit var storage: FirebaseStorage
+
 
 
     private data class QueryStats(
@@ -113,6 +119,7 @@ class AdminDashboardFragment : Fragment() {
         // Initialize Firebase components
         db = FirebaseFirestore.getInstance()
         auth = FirebaseAuth.getInstance()
+        storage = FirebaseStorage.getInstance()
 
         // Hide login UI
         (activity as? MainActivity)?.hideLoginUI()
@@ -607,18 +614,35 @@ class AdminDashboardFragment : Fragment() {
         }
     }
 
+
     private fun updateNavigationHeader(firstName: String, lastName: String, email: String) {
         val headerView = navigationView.getHeaderView(0)
         val nameTextView = headerView.findViewById<TextView>(R.id.nav_header_name)
         val emailTextView = headerView.findViewById<TextView>(R.id.nav_header_email)
         val ratingTextView = headerView.findViewById<TextView>(R.id.nav_header_rating)
+        val headerImageView = headerView.findViewById<CircleImageView>(R.id.nav_header_image)
 
         nameTextView.text = "$firstName $lastName"
         emailTextView.text = email
 
+        // Load local profile image if it exists
+        val imageFile = File(context?.filesDir, "admin_profile_image.jpg")
+        if (imageFile.exists()) {
+            context?.let { ctx ->
+                Glide.with(ctx)
+                    .load(imageFile)
+                    .placeholder(R.mipmap.ic_launcher_round)
+                    .error(R.mipmap.ic_launcher_round)
+                    .into(headerImageView)
+            }
+        } else {
+            headerImageView.setImageResource(R.mipmap.ic_launcher_round)
+        }
+
         // Setup real-time rating updates
         setupRatingListener(email, ratingTextView)
     }
+
 
     private fun setupRatingListener(adminEmail: String, ratingTextView: TextView) {
         db.collection("AdminReviews")

@@ -1,6 +1,7 @@
 package za.co.varstycollege.st1009749.campusconnect__v1
 
 import android.app.Activity
+import android.app.ProgressDialog
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -13,17 +14,18 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.google.android.material.navigation.NavigationView
 import com.google.android.material.textfield.TextInputEditText
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
 import com.google.firebase.storage.FirebaseStorage
 import de.hdodenhof.circleimageview.CircleImageView
+import java.io.File
 
 class AdminProfileFragment : Fragment() {
     private lateinit var auth: FirebaseAuth
     private lateinit var db: FirebaseFirestore
-    private lateinit var storage: FirebaseStorage
 
     // Profile Image Views
     private lateinit var adminProfileImage: CircleImageView
@@ -43,6 +45,11 @@ class AdminProfileFragment : Fragment() {
     private lateinit var adminLevelText: TextView
     private lateinit var saveButton: Button
 
+    companion object {
+        private const val PICK_IMAGE_REQUEST = 1
+        private const val PROFILE_IMAGE_FILE = "admin_profile_image.jpg"
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -57,7 +64,6 @@ class AdminProfileFragment : Fragment() {
         // Initialize Firebase
         auth = FirebaseAuth.getInstance()
         db = FirebaseFirestore.getInstance()
-        storage = FirebaseStorage.getInstance()
 
         // Initialize views
         initializeViews(view)
@@ -65,6 +71,7 @@ class AdminProfileFragment : Fragment() {
 
         // Load admin data
         loadAdminProfile()
+        loadLocalProfileImage()
 
         // Setup click listeners
         setupClickListeners()
@@ -83,7 +90,6 @@ class AdminProfileFragment : Fragment() {
             emailInput = view.findViewById(R.id.emailInput)
             genderSpinner = view.findViewById(R.id.genderSpinner)
             pronounsSpinner = view.findViewById(R.id.pronounsSpinner)
-
 
             // Statistics
             totalQueriesText = view.findViewById(R.id.totalQueriesText)
@@ -119,7 +125,6 @@ class AdminProfileFragment : Fragment() {
         }
     }
 
-
     private fun saveProfile() {
         val currentUser = auth.currentUser
         currentUser?.let { user ->
@@ -153,7 +158,6 @@ class AdminProfileFragment : Fragment() {
         }
     }
 
-
     private fun loadAdminProfile() {
         val currentUser = auth.currentUser
         currentUser?.let { user ->
@@ -171,9 +175,6 @@ class AdminProfileFragment : Fragment() {
                         lastNameInput.setText(document.getString("lastName"))
                         genderSpinner?.setText(document.getString("gender") ?: "", false)
                         pronounsSpinner?.setText(document.getString("pronouns") ?: "", false)
-
-                        // Load profile image
-                        loadProfileImage(user.uid)
 
                         // Load statistics
                         loadAdminStatistics(user.email!!)
@@ -202,7 +203,6 @@ class AdminProfileFragment : Fragment() {
                 }
         }
     }
-
 
     private fun loadAdminStatistics(adminEmail: String) {
         // Load total solved queries
@@ -246,23 +246,52 @@ class AdminProfileFragment : Fragment() {
             }
     }
 
-
-    private fun loadProfileImage(userId: String) {
-        val imageRef = storage.reference.child("admin_profiles/$userId.jpg")
-        imageRef.downloadUrl.addOnSuccessListener { uri ->
+    private fun loadLocalProfileImage() {
+        val imageFile = File(context?.filesDir, PROFILE_IMAGE_FILE)
+        if (imageFile.exists()) {
+            // Load into profile image
             Glide.with(this)
-                .load(uri)
+                .load(imageFile)
                 .placeholder(R.mipmap.ic_launcher_round)
                 .into(adminProfileImage)
+
+            // Load into nav header
+            val navigationView = activity?.findViewById<NavigationView>(R.id.admin_nav_view)
+            val headerView = navigationView?.getHeaderView(0)
+            val navHeaderImage = headerView?.findViewById<CircleImageView>(R.id.nav_header_image)
+
+            navHeaderImage?.let { headerImg ->
+                Glide.with(this)
+                    .load(imageFile)
+                    .placeholder(R.mipmap.ic_launcher_round)
+                    .into(headerImg)
+            }
         }
     }
 
-    private fun pickImage() {
-        val intent = Intent().apply {
-            type = "image/*"
-            action = Intent.ACTION_GET_CONTENT
+    private fun saveImageLocally(imageUri: Uri) {
+        try {
+            val progressDialog = ProgressDialog(context).apply {
+                setMessage("Updating profile picture...")
+                show()
+            }
+
+            val inputStream = context?.contentResolver?.openInputStream(imageUri)
+            val outputFile = File(context?.filesDir, PROFILE_IMAGE_FILE)
+
+            inputStream?.use { input ->
+                outputFile.outputStream().use { output ->
+                    input.copyTo(output)
+                }
+            }
+
+            progressDialog.dismiss()
+            loadLocalProfileImage()
+            Toast.makeText(context, "Profile picture updated", Toast.LENGTH_SHORT).show()
+        } catch (e: Exception) {
+            Toast.makeText(context, "Failed to save image", Toast.LENGTH_SHORT).show()
+            Log.e("Profile", "Error saving image: ${e.message}")
         }
-        startActivityForResult(Intent.createChooser(intent, "Select Profile Picture"), PICK_IMAGE_REQUEST)
     }
 
     private fun setupClickListeners() {
@@ -275,30 +304,19 @@ class AdminProfileFragment : Fragment() {
         }
     }
 
+    private fun pickImage() {
+        val intent = Intent().apply {
+            type = "image/*"
+            action = Intent.ACTION_GET_CONTENT
+        }
+        startActivityForResult(Intent.createChooser(intent, "Select Profile Picture"), PICK_IMAGE_REQUEST)
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == Activity.RESULT_OK && data?.data != null) {
-            val imageUri = data.data
-            uploadImage(imageUri!!)
+            saveImageLocally(data.data!!)
         }
-    }
-
-    private fun uploadImage(imageUri: Uri) {
-        val currentUser = auth.currentUser ?: return
-        val imageRef = storage.reference.child("admin_profiles/${currentUser.uid}.jpg")
-
-        imageRef.putFile(imageUri)
-            .addOnSuccessListener {
-                loadProfileImage(currentUser.uid)
-                Toast.makeText(context, "Profile picture updated", Toast.LENGTH_SHORT).show()
-            }
-            .addOnFailureListener { e ->
-                Toast.makeText(context, "Failed to upload image: ${e.message}", Toast.LENGTH_SHORT).show()
-            }
-    }
-
-    companion object {
-        private const val PICK_IMAGE_REQUEST = 1
     }
 }

@@ -356,10 +356,13 @@ class PreviousQueriesFragment : Fragment() {
         override fun getItemCount() = queries.size
     }
 
+
     private fun checkIfQueryRated(query: QueryItem, callback: (Boolean) -> Unit) {
         db.collection("AdminReviews")
             .whereEqualTo("queryName", query.name)
             .whereEqualTo("studentNumber", query.studentNumber)
+            .whereEqualTo("adminEmail", query.adminEmail)  // Add this line
+            .whereEqualTo("queryDescription", query.description)  // Add this line
             .get()
             .addOnSuccessListener { documents ->
                 callback(!documents.isEmpty())
@@ -368,6 +371,7 @@ class PreviousQueriesFragment : Fragment() {
                 callback(false) // In case of error, allow rating
             }
     }
+
 
     private fun showRatingDialog(query: QueryItem) {
         val dialog = Dialog(requireContext(), R.style.RatingDialogTheme)
@@ -428,6 +432,7 @@ class PreviousQueriesFragment : Fragment() {
                 }
             }
 
+
             // Create review document
             val reviewData = hashMapOf(
                 "queryName" to query.name,
@@ -440,7 +445,9 @@ class PreviousQueriesFragment : Fragment() {
                 "rating" to rating,
                 "feedback" to feedback,
                 "dateSubmitted" to Date(),
-                "queryDescription" to query.description
+                "queryDescription" to query.description,
+                "queryType" to query.type,  // Add this line
+                "queryDateSubmitted" to query.dateSubmitted  // Add this line
             )
 
             // Save to Firestore under AdminReviews collection
