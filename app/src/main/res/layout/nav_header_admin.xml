@@ -13,10 +13,12 @@
         android:id="@+id/nav_header_image"
         android:layout_width="80dp"
         android:layout_height="80dp"
-        android:src="@drawable/cc_logo"
-        app:civ_border_width="2dp"
-        app:civ_border_color="@color/electric_blue"
-        android:layout_marginBottom="16dp"/>
+        android:src="@mipmap/ic_launcher_round"
+    app:civ_border_width="2dp"
+    app:civ_border_color="@color/electric_blue"
+    app:civ_circle_background_color="@color/dark_background"
+    android:scaleType="centerCrop"
+    android:layout_marginBottom="16dp"/>
 
     <!-- Rest of the layout remains the same -->
     <TextView

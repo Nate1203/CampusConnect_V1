@@ -67,6 +67,9 @@ dependencies {
     implementation(libs.androidx.navigation.ui.ktx)
     implementation(libs.androidx.room.ktx)
 
+    // Biometric dependencies
+    implementation(libs.androidx.biometric)
+
     // Testing dependencies
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

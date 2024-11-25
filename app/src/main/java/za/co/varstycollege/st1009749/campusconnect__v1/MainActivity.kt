@@ -13,8 +13,13 @@ import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import android.content.Context
 import android.content.res.Configuration
+import android.graphics.BitmapFactory
+import android.util.Log
+import com.google.android.material.navigation.NavigationView
 import com.google.firebase.FirebaseApp
 import com.google.firebase.storage.FirebaseStorage
+import de.hdodenhof.circleimageview.CircleImageView
+import java.io.File
 
 class MainActivity : AppCompatActivity() {
     private lateinit var viewPager: ViewPager2
@@ -47,6 +52,37 @@ class MainActivity : AppCompatActivity() {
             setupLoginUI()
         }
     }
+
+
+    // In MainActivity's updateNavHeaderImage()
+    fun updateNavHeaderImage() {
+        try {
+            val imageFile = File(filesDir, "admin_profile_image.jpg")
+            Log.d("MainActivity", "Updating nav header image. File exists: ${imageFile.exists()}")
+            if (imageFile.exists()) {
+                val bitmap = BitmapFactory.decodeFile(imageFile.absolutePath)
+                val navigationView = findViewById<NavigationView>(R.id.admin_nav_view)
+                val headerView = navigationView.getHeaderView(0)
+                val navHeaderImage = headerView.findViewById<CircleImageView>(R.id.nav_header_image)
+                navHeaderImage.setImageBitmap(bitmap)
+                Log.d("MainActivity", "Nav header image updated successfully")
+            }
+        } catch (e: Exception) {
+            Log.e("MainActivity", "Error updating nav header: ${e.message}")
+            e.printStackTrace()
+        }
+    }
+
+
+    override fun onResume() {
+        super.onResume()
+        val prefs = getSharedPreferences("CampusConnectPrefs", Context.MODE_PRIVATE)
+        if (prefs.getBoolean("nav_header_image_updated", false)) {
+            updateNavHeaderImage()
+            prefs.edit().putBoolean("nav_header_image_updated", false).apply()
+        }
+    }
+
 
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)

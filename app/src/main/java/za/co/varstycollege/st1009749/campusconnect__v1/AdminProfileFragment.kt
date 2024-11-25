@@ -2,9 +2,11 @@ package za.co.varstycollege.st1009749.campusconnect__v1
 
 import android.app.Activity
 import android.app.ProgressDialog
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.provider.MediaStore
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -22,81 +24,67 @@ import com.google.firebase.firestore.SetOptions
 import com.google.firebase.storage.FirebaseStorage
 import de.hdodenhof.circleimageview.CircleImageView
 import java.io.File
+import java.io.FileOutputStream
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.util.Base64
+import java.io.ByteArrayOutputStream
 
 class AdminProfileFragment : Fragment() {
     private lateinit var auth: FirebaseAuth
     private lateinit var db: FirebaseFirestore
+    private lateinit var profileImageManager: ProfileImageManager
 
-    // Profile Image Views
     private lateinit var adminProfileImage: CircleImageView
     private lateinit var changePhotoButton: ImageView
-
-    // Personal Info Fields
     private lateinit var firstNameInput: TextInputEditText
     private lateinit var middleNameInput: TextInputEditText
     private lateinit var lastNameInput: TextInputEditText
     private lateinit var emailInput: TextInputEditText
     private var genderSpinner: AutoCompleteTextView? = null
     private var pronounsSpinner: AutoCompleteTextView? = null
-
-    // Statistics
     private lateinit var totalQueriesText: TextView
     private lateinit var adminRatingText: TextView
     private lateinit var adminLevelText: TextView
     private lateinit var saveButton: Button
+    private var currentBitmap: Bitmap? = null
 
     companion object {
         private const val PICK_IMAGE_REQUEST = 1
         private const val PROFILE_IMAGE_FILE = "admin_profile_image.jpg"
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_admin_profile, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        // Initialize Firebase
         auth = FirebaseAuth.getInstance()
         db = FirebaseFirestore.getInstance()
+        profileImageManager = ProfileImageManager(requireContext())
 
-        // Initialize views
         initializeViews(view)
         setupSpinners()
-
-        // Load admin data
         loadAdminProfile()
         loadLocalProfileImage()
-
-        // Setup click listeners
         setupClickListeners()
     }
 
     private fun initializeViews(view: View) {
         try {
-            // Profile Image Views
             adminProfileImage = view.findViewById(R.id.adminProfileImage)
             changePhotoButton = view.findViewById(R.id.changePhotoButton)
-
-            // Personal Info Fields
             firstNameInput = view.findViewById(R.id.firstNameInput)
             middleNameInput = view.findViewById(R.id.middleNameInput)
             lastNameInput = view.findViewById(R.id.lastNameInput)
             emailInput = view.findViewById(R.id.emailInput)
             genderSpinner = view.findViewById(R.id.genderSpinner)
             pronounsSpinner = view.findViewById(R.id.pronounsSpinner)
-
-            // Statistics
             totalQueriesText = view.findViewById(R.id.totalQueriesText)
             adminRatingText = view.findViewById(R.id.adminRatingText)
             adminLevelText = view.findViewById(R.id.adminLevelText)
             saveButton = view.findViewById(R.id.saveButton)
-
         } catch (e: Exception) {
             Log.e("AdminProfile", "Error initializing views: ${e.message}")
             Toast.makeText(context, "Error initializing profile views", Toast.LENGTH_SHORT).show()
@@ -106,14 +94,11 @@ class AdminProfileFragment : Fragment() {
     private fun setupSpinners() {
         try {
             context?.let { ctx ->
-                // Setup Gender Spinner
                 genderSpinner?.let { spinner ->
                     val genders = arrayOf("Male", "Female", "Non-binary", "Prefer not to say")
                     val genderAdapter = ArrayAdapter(ctx, R.layout.dropdown_item, genders)
                     spinner.setAdapter(genderAdapter)
                 }
-
-                // Setup Pronouns Spinner
                 pronounsSpinner?.let { spinner ->
                     val pronouns = arrayOf("He/Him", "She/Her", "They/Them", "Prefer not to say")
                     val pronounsAdapter = ArrayAdapter(ctx, R.layout.dropdown_item, pronouns)
@@ -125,38 +110,9 @@ class AdminProfileFragment : Fragment() {
         }
     }
 
-    private fun saveProfile() {
-        val currentUser = auth.currentUser
-        currentUser?.let { user ->
-            // Get all the values to save
-            val middleName = middleNameInput.text.toString()
-            val gender = genderSpinner?.text.toString()
-            val pronouns = pronounsSpinner?.text.toString()
 
-            // Create profile data map
-            val profileData = hashMapOf(
-                "userId" to user.uid,
-                "email" to user.email,
-                "firstName" to firstNameInput.text.toString(),
-                "middleName" to middleName,
-                "lastName" to lastNameInput.text.toString(),
-                "gender" to gender,
-                "pronouns" to pronouns,
-                "lastUpdated" to com.google.firebase.Timestamp.now()
-            )
 
-            // Save to AdminProfile collection
-            db.collection("AdminProfile")
-                .document(user.uid)
-                .set(profileData, SetOptions.merge())
-                .addOnSuccessListener {
-                    Toast.makeText(context, "Profile updated successfully", Toast.LENGTH_SHORT).show()
-                }
-                .addOnFailureListener { e ->
-                    Toast.makeText(context, "Failed to update profile: ${e.message}", Toast.LENGTH_SHORT).show()
-                }
-        }
-    }
+
 
     private fun loadAdminProfile() {
         val currentUser = auth.currentUser
@@ -246,77 +202,147 @@ class AdminProfileFragment : Fragment() {
             }
     }
 
-    private fun loadLocalProfileImage() {
-        val imageFile = File(context?.filesDir, PROFILE_IMAGE_FILE)
-        if (imageFile.exists()) {
-            // Load into profile image
-            Glide.with(this)
-                .load(imageFile)
-                .placeholder(R.mipmap.ic_launcher_round)
-                .into(adminProfileImage)
 
-            // Load into nav header
-            val navigationView = activity?.findViewById<NavigationView>(R.id.admin_nav_view)
-            val headerView = navigationView?.getHeaderView(0)
-            val navHeaderImage = headerView?.findViewById<CircleImageView>(R.id.nav_header_image)
-
-            navHeaderImage?.let { headerImg ->
-                Glide.with(this)
-                    .load(imageFile)
-                    .placeholder(R.mipmap.ic_launcher_round)
-                    .into(headerImg)
-            }
-        }
-    }
-
-    private fun saveImageLocally(imageUri: Uri) {
-        try {
-            val progressDialog = ProgressDialog(context).apply {
-                setMessage("Updating profile picture...")
-                show()
-            }
-
-            val inputStream = context?.contentResolver?.openInputStream(imageUri)
-            val outputFile = File(context?.filesDir, PROFILE_IMAGE_FILE)
-
-            inputStream?.use { input ->
-                outputFile.outputStream().use { output ->
-                    input.copyTo(output)
-                }
-            }
-
-            progressDialog.dismiss()
-            loadLocalProfileImage()
-            Toast.makeText(context, "Profile picture updated", Toast.LENGTH_SHORT).show()
-        } catch (e: Exception) {
-            Toast.makeText(context, "Failed to save image", Toast.LENGTH_SHORT).show()
-            Log.e("Profile", "Error saving image: ${e.message}")
-        }
-    }
 
     private fun setupClickListeners() {
+        changePhotoButton.setOnClickListener {
+            clearAllStoredImages()
+            val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+            startActivityForResult(intent, PICK_IMAGE_REQUEST)
+        }
+
         saveButton.setOnClickListener {
             saveProfile()
         }
-
-        changePhotoButton.setOnClickListener {
-            pickImage()
-        }
-    }
-
-    private fun pickImage() {
-        val intent = Intent().apply {
-            type = "image/*"
-            action = Intent.ACTION_GET_CONTENT
-        }
-        startActivityForResult(Intent.createChooser(intent, "Select Profile Picture"), PICK_IMAGE_REQUEST)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == Activity.RESULT_OK && data?.data != null) {
-            saveImageLocally(data.data!!)
+            profileImageManager.updateProfileImage(
+                fragment = this,
+                imageUri = data.data!!,
+                profileImageView = adminProfileImage
+            ) { base64Image ->
+                saveProfileImageLocally(base64Image)
+            }
+        }
+    }
+
+
+    private fun saveProfileImageLocally(base64Image: String) {
+        try {
+            val imageBytes = Base64.decode(base64Image, Base64.DEFAULT)
+            val bitmap = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size)
+            val file = File(context?.filesDir, PROFILE_IMAGE_FILE)
+
+            // Save to file
+            FileOutputStream(file).use { out ->
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out)
+            }
+
+            // Update profile image
+            adminProfileImage.setImageBitmap(bitmap)
+
+            // Notify MainActivity to update nav header and set flag
+            (activity as? MainActivity)?.updateNavHeaderImage()
+            activity?.getSharedPreferences("CampusConnectPrefs", Context.MODE_PRIVATE)
+                ?.edit()
+                ?.putBoolean("nav_header_image_updated", true)
+                ?.apply()
+
+            Toast.makeText(context, "Profile picture updated successfully", Toast.LENGTH_SHORT).show()
+        } catch (e: Exception) {
+            Toast.makeText(context, "Failed to save profile picture", Toast.LENGTH_SHORT).show()
+            Log.e("ProfileImage", "Error saving locally: ${e.message}")
+        }
+    }
+
+    private fun clearAllStoredImages() {
+        try {
+            // Clear file
+            val imageFile = File(context?.filesDir, PROFILE_IMAGE_FILE)
+            if (imageFile.exists()) {
+                imageFile.delete()
+            }
+
+            // Reset profile image
+            adminProfileImage.setImageResource(R.mipmap.ic_launcher_round)
+
+            // Notify MainActivity and set flag
+            (activity as? MainActivity)?.updateNavHeaderImage()
+            activity?.getSharedPreferences("CampusConnectPrefs", Context.MODE_PRIVATE)
+                ?.edit()
+                ?.putBoolean("nav_header_image_updated", true)
+                ?.apply()
+
+        } catch (e: Exception) {
+            Log.e("ProfileImage", "Error clearing images: ${e.message}")
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        // Ensure nav header is updated when returning to fragment
+        (activity as? MainActivity)?.updateNavHeaderImage()
+    }
+
+
+
+
+    private fun loadLocalProfileImage() {
+        val imageFile = File(context?.filesDir, PROFILE_IMAGE_FILE)
+        if (imageFile.exists()) {
+            try {
+                val bitmap = BitmapFactory.decodeFile(imageFile.absolutePath)
+                adminProfileImage.setImageBitmap(bitmap)
+
+                (activity as? MainActivity)?.let { mainActivity ->
+                    mainActivity.findViewById<NavigationView>(R.id.admin_nav_view)?.let { navView ->
+                        val headerView = navView.getHeaderView(0)
+                        val navHeaderImage = headerView.findViewById<CircleImageView>(R.id.nav_header_image)
+                        navHeaderImage.setImageBitmap(bitmap)
+
+                        // Force a layout refresh
+                        navHeaderImage.invalidate()
+                        headerView.invalidate()
+                        navView.invalidate()
+                    }
+                }
+            } catch (e: Exception) {
+                Log.e("ProfileImage", "Error loading local image: ${e.message}")
+                adminProfileImage.setImageResource(R.mipmap.ic_launcher_round)
+            }
+        }
+    }
+
+    private fun saveProfile() {
+        val currentUser = auth.currentUser
+        currentUser?.let { user ->
+            val middleName = middleNameInput.text.toString()
+            val gender = genderSpinner?.text.toString()
+            val pronouns = pronounsSpinner?.text.toString()
+
+            val profileData = hashMapOf(
+                "userId" to user.uid,
+                "email" to user.email,
+                "firstName" to firstNameInput.text.toString(),
+                "middleName" to middleName,
+                "lastName" to lastNameInput.text.toString(),
+                "gender" to gender,
+                "pronouns" to pronouns,
+                "lastUpdated" to com.google.firebase.Timestamp.now()
+            )
+
+            db.collection("AdminProfile")
+                .document(user.uid)
+                .set(profileData, SetOptions.merge())
+                .addOnSuccessListener {
+                    Toast.makeText(context, "Profile updated successfully", Toast.LENGTH_SHORT).show()
+                }
+                .addOnFailureListener { e ->
+                    Toast.makeText(context, "Failed to update profile: ${e.message}", Toast.LENGTH_SHORT).show()
+                }
         }
     }
 }

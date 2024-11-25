@@ -34,10 +34,10 @@ class ProfileFragment : Fragment() {
     private lateinit var queriesSubmittedText: TextView
     private lateinit var saveButton: Button
     private lateinit var changePhotoButton: ImageView
+    private lateinit var profileImageManager: ProfileImageManager
 
     private lateinit var db: FirebaseFirestore
     private lateinit var auth: FirebaseAuth
-    private var selectedImageUri: Uri? = null
     private var currentBase64Image: String? = null
 
     private val PICK_IMAGE_REQUEST = 1
@@ -52,15 +52,32 @@ class ProfileFragment : Fragment() {
         // Initialize Firebase
         db = FirebaseFirestore.getInstance()
         auth = FirebaseAuth.getInstance()
+        profileImageManager = ProfileImageManager(requireContext())
 
         initializeViews(view)
         setupSpinners()
         setupRecyclerView()
         loadUserData()
 
-        // Setup image picker
+        // Setup image picker with clearing current image
         changePhotoButton.setOnClickListener {
-            pickImage()
+            // Clear current image
+            currentBase64Image = null
+            profileImage.setImageResource(R.mipmap.ic_launcher_round)
+
+            // Clear image in Firestore
+            val sharedPref = activity?.getSharedPreferences("CampusConnectPrefs", Activity.MODE_PRIVATE)
+            val studentId = sharedPref?.getString("studentId", "") ?: ""
+            if (studentId.isNotEmpty()) {
+                db.collection("StudentProfile")
+                    .document(studentId)
+                    .update("profileImage", null)
+                    .addOnSuccessListener {
+                        // Open image picker
+                        val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+                        startActivityForResult(intent, PICK_IMAGE_REQUEST)
+                    }
+            }
         }
 
         // Setup save button
@@ -153,21 +170,16 @@ class ProfileFragment : Fragment() {
         }
     }
 
-    private fun pickImage() {
-        val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-        startActivityForResult(intent, PICK_IMAGE_REQUEST)
-    }
-
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == PICK_IMAGE_REQUEST && resultCode == Activity.RESULT_OK && data != null) {
-            selectedImageUri = data.data
-            try {
-                val bitmap = MediaStore.Images.Media.getBitmap(requireActivity().contentResolver, selectedImageUri)
-                profileImage.setImageBitmap(bitmap)
-                currentBase64Image = bitmapToBase64(bitmap)
-            } catch (e: Exception) {
-                Toast.makeText(context, "Error loading image", Toast.LENGTH_SHORT).show()
+        if (requestCode == PICK_IMAGE_REQUEST && resultCode == Activity.RESULT_OK && data?.data != null) {
+            profileImageManager.updateProfileImage(
+                fragment = this,
+                imageUri = data.data!!,
+                profileImageView = profileImage
+            ) { base64Image ->
+                currentBase64Image = base64Image
+                saveProfileImageToFirestore(base64Image)
             }
         }
     }
@@ -204,11 +216,22 @@ class ProfileFragment : Fragment() {
             }
     }
 
-    private fun bitmapToBase64(bitmap: Bitmap): String {
-        val baos = ByteArrayOutputStream()
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 70, baos)
-        val imageBytes = baos.toByteArray()
-        return Base64.encodeToString(imageBytes, Base64.DEFAULT)
+    private fun saveProfileImageToFirestore(base64Image: String) {
+        val sharedPref = activity?.getSharedPreferences("CampusConnectPrefs", Activity.MODE_PRIVATE)
+        val studentId = sharedPref?.getString("studentId", "") ?: ""
+
+        if (studentId.isNotEmpty()) {
+            db.collection("StudentProfile")
+                .document(studentId)
+                .update("profileImage", base64Image)
+                .addOnSuccessListener {
+                    Toast.makeText(context, "Profile picture updated successfully", Toast.LENGTH_SHORT).show()
+                }
+                .addOnFailureListener { e ->
+                    Toast.makeText(context, "Failed to update profile picture", Toast.LENGTH_SHORT).show()
+                    Log.e("ProfileImage", "Error saving to Firestore: ${e.message}")
+                }
+        }
     }
 
     private fun displayBase64Image(base64Image: String) {
